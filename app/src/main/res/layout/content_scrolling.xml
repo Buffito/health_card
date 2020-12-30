@@ -15,30 +15,33 @@
         android:orientation="vertical">
 
         <EditText
-            android:layout_marginTop="35dp"
             android:id="@+id/editTextPersonFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
             android:ems="10"
             android:hint="First Name"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextPersonLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Last Name"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Date of Birth"
+            android:imeOptions="actionNext"
             android:inputType="date" />
 
         <Spinner
@@ -48,48 +51,53 @@
             android:layout_marginTop="15dp" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextCountryISOCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Country ISO Code"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextPersonalID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Personal ID"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextCardID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Card ID"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextVaccineName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Vaccine Name"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
         <EditText
-            android:layout_marginTop="15dp"
             android:id="@+id/editTextDateVaccine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="Date vaccine given"
+            android:imeOptions="actionNext"
             android:inputType="date" />
 
         <Button
@@ -99,7 +107,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="5dp"
-            android:enabled="false"
+            android:enabled="true"
             android:text="apply"
             android:textColor="@color/white" />
 

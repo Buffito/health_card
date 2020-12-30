@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "806212244605",
+    "project_id": "thesis-a1209",
+    "storage_bucket": "thesis-a1209.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806212244605:android:daffe926968ae060c68d14",
+        "android_client_info": {
+          "package_name": "com.theodoroskotoufos.healthcard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "806212244605-b501bb9m22srad0shp5m8qm5aao52u90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPM9AO4_pZ-5gZDY1YJhfiYhkzfCrpV80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "806212244605-b501bb9m22srad0shp5m8qm5aao52u90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
