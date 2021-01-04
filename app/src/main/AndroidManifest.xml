@@ -9,7 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCard">
-        <activity android:name=".UserProfile" />
+        <activity
+            android:name=".MyProfile"
+            android:label="@string/title_activity_my_profile"
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
+        <activity
+            android:name=".UserProfile"
+            android:label="@string/title_activity_user_profile"
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".CreateProfile"
             android:label="@string/title_activity_create_profile"

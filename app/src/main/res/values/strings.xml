@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Health Card</string>
     <string name="title_activity_create_profile">Create a profile</string>
-    <string name="action_settings">Settings</string>
     <string name="title_activity_login">Login</string>
     <string name="prompt_personalID">Personal ID</string>
     <string name="prompt_cardID">Card ID</string>
@@ -11,6 +10,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="title_activity_my_profile">My Profile</string>
+    <string name="title_activity_user_profile">User Profile</string>
 
     <string-array name="gender_array">
         <item>Male</item>
