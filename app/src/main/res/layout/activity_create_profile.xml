@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@drawable/background"
-    tools:context=".CreateProfile">
+    android:fitsSystemWindows="true"
+    tools:context=".CreateProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -35,15 +35,15 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_scrolling" />
+    <include layout="@layout/content_create_profile" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="100dp"
         android:layout_height="104dp"
+        android:layout_marginRight="30dp"
         android:clickable="true"
         android:foreground="@drawable/camera"
-        android:layout_marginRight="30dp"
         android:foregroundGravity="center_vertical|center_horizontal"
         app:backgroundTint="@color/white"
         app:layout_anchor="@+id/app_bar"

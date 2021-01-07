@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_heartbeat"
     android:fitsSystemWindows="true"
-    tools:context=".MyProfileActivity">
+    tools:context=".ProfileInfoActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -16,7 +16,7 @@
         android:theme="@style/Theme.HealthCard.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar3"
+            android:id="@+id/toolbar4"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
@@ -25,7 +25,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_my_profile" />
+    <include layout="@layout/content_profile_info" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"

@@ -1,9 +1,9 @@
 package com.theodoroskotoufos.healthcard
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.createProfileButton).setOnClickListener {
             /// send to create a profile activity
-            val intent = Intent(this, CreateProfile::class.java)
+            val intent = Intent(this, CreateProfileActivity::class.java)
             startActivity(intent)
         }
 

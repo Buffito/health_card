@@ -10,15 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCard">
         <activity
-            android:name=".MyProfile"
+            android:name=".ProfileInfoActivity"
+            android:label="@string/title_activity_profile_info"
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
+        <activity
+            android:name=".MyProfileActivity"
             android:label="@string/title_activity_my_profile"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
-            android:name=".UserProfile"
+            android:name=".UserProfileActivity"
             android:label="@string/title_activity_user_profile"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
-            android:name=".CreateProfile"
+            android:name=".CreateProfileActivity"
             android:label="@string/title_activity_create_profile"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity

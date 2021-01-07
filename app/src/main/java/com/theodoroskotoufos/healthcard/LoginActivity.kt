@@ -1,79 +1,130 @@
 package com.theodoroskotoufos.healthcard
 
-import android.app.Activity
 import android.content.Context
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
-import com.google.firebase.database.FirebaseDatabase
-import com.theodoroskotoufos.healthcard.R
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.*
+
 
 class LoginActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // initializing variables to be used later
+
         findViewById<Button>(R.id.singInButton).isEnabled = false
-        var personalTextChanged = false
-        var cardTextChanged = false
-        var personalID : String = ""
-        var cardID : String = ""
+        var personalID = ""
+        var cardID = ""
 
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
-        findViewById<EditText>(R.id.personalID).addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                findViewById<Button>(R.id.singInButton).isEnabled = personalTextChanged && cardTextChanged
-            }
+        findViewById<CheckBox>(R.id.checkBox).isChecked = sharedPref.getBoolean("remember", false)
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+        val editTextList = arrayOf(
+            findViewById<EditText>(R.id.personalID),
+            findViewById<EditText>(R.id.cardID)
+        )
+        val empty = BooleanArray(2)
+        // add text changed listeners to the editTexts
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                personalTextChanged = s?.isNotEmpty() ?: false
-                if (personalTextChanged)
-                    personalID = s.toString().trim()
-            }
-        })
+        for (i in 0..1) {
+            editTextList[i].addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    findViewById<Button>(R.id.singInButton).isEnabled = emptyArrayCheck(empty)
+                    personalID = findViewById<EditText>(R.id.personalID).text.toString().trim()
+                    cardID = findViewById<EditText>(R.id.cardID).text.toString().trim()
+                }
 
-        findViewById<EditText>(R.id.cardID).addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                findViewById<Button>(R.id.singInButton).isEnabled = personalTextChanged && cardTextChanged
-            }
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                cardTextChanged = s?.isNotEmpty() ?: false
-                if (cardTextChanged)
-                    cardID = s.toString().trim()
-            }
-        })
-
-        findViewById<Button>(R.id.singInButton).setOnClickListener{
-            Toast.makeText(this,"click", LENGTH_SHORT).show()
-            if (sharedPref.getString("userID",null).equals(personalID) &&
-                    sharedPref.getString("cardID",null).equals(cardID))
-                        login()
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    empty[i] = !s.isNullOrEmpty()
+                }
+            })
         }
 
+        // sing in button click listener
+
+        findViewById<Button>(R.id.singInButton).setOnClickListener {
+            if (sharedPref.getString("userID", null).equals(personalID) &&
+                sharedPref.getString("cardID", null).equals(cardID)
+            )
+                login()
+            else if (databaseChildExists(databaseRef, personalID) &&
+                databaseRef.child("card id").equals(cardID)
+            ) {
+                login()
+            } else {
+                val snackbar =
+                    Snackbar.make(it, "PersonalId or CardId was invalid.", Snackbar.LENGTH_LONG)
+                snackbar.view.setBackgroundColor(resources.getColor(R.color.green))
+                snackbar.show()
+            }
+            login()
+        }
+
+        // checkBox on/off mechanic
+
+        findViewById<CheckBox>(R.id.checkBox).setOnClickListener {
+            checkBoxOnOff(sharedPref)
+        }
     }
 
-    private fun login(){
-        Toast.makeText(this,"login", LENGTH_SHORT).show()
+    private fun login() {
+        val intent = Intent(this, MyProfileActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun emptyArrayCheck(empty: BooleanArray): Boolean {
+        return empty[0] && empty[1]
+    }
+
+    private fun checkBoxOnOff(sharedPref: SharedPreferences) {
+        if (findViewById<CheckBox>(R.id.checkBox).isChecked) {
+            with(sharedPref.edit()) {
+                putBoolean("remember", true)
+                apply()
+            }
+        } else {
+            with(sharedPref.edit()) {
+                putBoolean("remember", false)
+                apply()
+            }
+        }
+    }
+
+    private fun databaseChildExists(databaseRef: DatabaseReference, personalID: String): Boolean {
+        var exists = false
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.hasChild(personalID))
+                    exists = true
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        return exists
     }
 }
+

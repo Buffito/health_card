@@ -12,6 +12,7 @@
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="title_activity_my_profile">My Profile</string>
     <string name="title_activity_user_profile">User Profile</string>
+    <string name="title_activity_profile_info">Profile Information</string>
 
     <string-array name="gender_array">
         <item>Male</item>
