@@ -80,27 +80,27 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             /// save to firebase/shared preferences and open user profile
 
             if (emptyArrayCheck()) {
-                val userID = findViewById<EditText>(R.id.editTextPersonalID).text.toString()
-                val myRef = databaseRef.child(userID)
+                val personalID = findViewById<EditText>(R.id.editTextPersonalID).text.toString()
+                val myRef = databaseRef.child(personalID)
 
                 /*        myRef.child("first name").setValue(findViewById<EditText>(R.id.editTextPersonFirstName).text.toString())
                         myRef.child("last name").setValue(findViewById<EditText>(R.id.editTextPersonLastName).text.toString())
-                        myRef.child("date of birth").setValue(findViewById<EditText>(R.id.editTextDate).text.toString())
                         myRef.child("gender").setValue(gender)
+                        myRef.child("date of birth").setValue(findViewById<EditText>(R.id.editTextDate).text.toString())
                         myRef.child("iso code").setValue(findViewById<EditText>(R.id.editTextCountryISOCode).text.toString())
-                        myRef.child("user id").setValue(userID)
+                        myRef.child("personal id").setValue(personalID)
                         myRef.child("card id").setValue(findViewById<EditText>(R.id.editTextCardID).text.toString())
                         with (sharedPref.edit()) {
                             putString("vaccine_name", findViewById<EditText>(R.id.editTextVaccineName).text.toString())
                             putString("vaccine_date", findViewById<EditText>(R.id.editTextDateVaccine).text.toString())
-                            putString("userID", userID)
+                            putString("personalID", personalID)
                             putString("cardID", findViewById<EditText>(R.id.editTextCardID).text.toString())
                             apply()
                         }   */
             }
 
             val intent = Intent(this, UserProfileActivity::class.java)
-            //    intent.putExtra("userID",userID)
+            //    intent.putExtra("personalID",personalID)
             startActivity(intent)
 
         }

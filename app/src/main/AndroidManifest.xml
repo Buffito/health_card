@@ -12,7 +12,8 @@
         <activity
             android:name=".ProfileInfoActivity"
             android:label="@string/title_activity_profile_info"
-            android:theme="@style/Theme.HealthCard.NoActionBar" />
+            android:theme="@style/Theme.HealthCard.NoActionBar"
+            android:parentActivityName="com.theodoroskotoufos.healthcard.MyProfileActivity"/>
         <activity
             android:name=".MyProfileActivity"
             android:label="@string/title_activity_my_profile"

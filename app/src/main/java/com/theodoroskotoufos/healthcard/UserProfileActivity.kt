@@ -12,7 +12,7 @@ class UserProfileActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar2))
         findViewById<Toolbar>(R.id.toolbar2).title = title
 
-        val userID: String = intent.getStringExtra("userID").toString()
+        val personalID: String = intent.getStringExtra("personalID").toString()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
     }
 }

@@ -15,7 +15,7 @@ import com.google.firebase.database.*
 
 
 class LoginActivity : AppCompatActivity() {
-
+    var personalID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +24,6 @@ class LoginActivity : AppCompatActivity() {
         // initializing variables to be used later
 
         findViewById<Button>(R.id.singInButton).isEnabled = false
-        var personalID = ""
         var cardID = ""
 
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
@@ -64,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         // sing in button click listener
 
         findViewById<Button>(R.id.singInButton).setOnClickListener {
-            if (sharedPref.getString("userID", null).equals(personalID) &&
+            if (sharedPref.getString("personalID", null).equals(personalID) &&
                 sharedPref.getString("cardID", null).equals(cardID)
             )
                 login()
@@ -90,6 +89,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         val intent = Intent(this, MyProfileActivity::class.java)
+        intent.putExtra("personalID", personalID)
         startActivity(intent)
     }
 

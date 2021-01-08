@@ -1,9 +1,9 @@
 package com.theodoroskotoufos.healthcard
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.database.FirebaseDatabase
@@ -15,12 +15,22 @@ class MyProfileActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar3))
         findViewById<Toolbar>(R.id.toolbar3).title = title
 
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val personalID: String = intent.getStringExtra("personalID").toString()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
+        var fname = ""
+        var lname = ""
+        var name = ""
+
+        fname = databaseRef.child(personalID).child("first name").get().toString()
+        lname = databaseRef.child(personalID).child("last name").get().toString()
+        name = "$fname $lname"
+
+        findViewById<TextView>(R.id.textViewName).text = name
 
         findViewById<Button>(R.id.infoButton).setOnClickListener {
             /// send to info activity
             val intent = Intent(this, ProfileInfoActivity::class.java)
+            intent.putExtra("personalID",personalID)
             startActivity(intent)
         }
 

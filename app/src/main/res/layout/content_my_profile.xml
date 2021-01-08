@@ -14,7 +14,7 @@
         android:layout_marginTop="241dp"
         android:ems="10"
         android:gravity="center_horizontal"
-        android:text="Name"
+        android:hint="Name"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
