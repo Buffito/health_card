@@ -2,11 +2,13 @@ package com.theodoroskotoufos.healthcard
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,6 +19,7 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var gender: String = ""
     private var empty = BooleanArray(8)
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_profile)
@@ -24,7 +27,8 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         findViewById<Toolbar>(R.id.toolbar2).title = title
 
         findViewById<Button>(R.id.applyButton).isEnabled = false
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val activity = this@CreateProfileActivity
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
         val editTextList = arrayOf(
@@ -46,7 +50,6 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         arrayAdapter.setDropDownViewResource(R.layout.spinner_list)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = this
-
 
         for (i in 0..7) {
             editTextList[i].addTextChangedListener(object : TextWatcher {
@@ -83,25 +86,40 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 val personalID = findViewById<EditText>(R.id.editTextPersonalID).text.toString()
                 val myRef = databaseRef.child(personalID)
 
-                /*        myRef.child("first name").setValue(findViewById<EditText>(R.id.editTextPersonFirstName).text.toString())
-                        myRef.child("last name").setValue(findViewById<EditText>(R.id.editTextPersonLastName).text.toString())
-                        myRef.child("gender").setValue(gender)
-                        myRef.child("date of birth").setValue(findViewById<EditText>(R.id.editTextDate).text.toString())
-                        myRef.child("iso code").setValue(findViewById<EditText>(R.id.editTextCountryISOCode).text.toString())
-                        myRef.child("personal id").setValue(personalID)
-                        myRef.child("card id").setValue(findViewById<EditText>(R.id.editTextCardID).text.toString())
-                        with (sharedPref.edit()) {
-                            putString("vaccine_name", findViewById<EditText>(R.id.editTextVaccineName).text.toString())
-                            putString("vaccine_date", findViewById<EditText>(R.id.editTextDateVaccine).text.toString())
-                            putString("personalID", personalID)
-                            putString("cardID", findViewById<EditText>(R.id.editTextCardID).text.toString())
-                            apply()
-                        }   */
+                myRef.child("first name")
+                    .setValue(findViewById<EditText>(R.id.editTextPersonFirstName).text.toString())
+                myRef.child("last name")
+                    .setValue(findViewById<EditText>(R.id.editTextPersonLastName).text.toString())
+                myRef.child("gender").setValue(gender)
+                myRef.child("date of birth")
+                    .setValue(findViewById<EditText>(R.id.editTextDate).text.toString())
+                myRef.child("iso code")
+                    .setValue(findViewById<EditText>(R.id.editTextCountryISOCode).text.toString())
+                myRef.child("personal id").setValue(personalID)
+                myRef.child("card id")
+                    .setValue(findViewById<EditText>(R.id.editTextCardID).text.toString())
+
+                with(sharedPref.edit()) {
+                    putString(
+                        "vaccine_name",
+                        findViewById<EditText>(R.id.editTextVaccineName).text.toString().trim()
+                    )
+                    putString(
+                        "vaccine_date",
+                        findViewById<EditText>(R.id.editTextDateVaccine).text.toString().trim()
+                    )
+                    putString("personalID", personalID)
+                    putString("cardID", findViewById<EditText>(R.id.editTextCardID).text.toString())
+                    apply()
+                }
+
+
+                val intent = Intent(this, MyProfileActivity::class.java)
+                intent.putExtra("personalID", personalID)
+                startActivity(intent)
+
             }
 
-            val intent = Intent(this, UserProfileActivity::class.java)
-            //    intent.putExtra("personalID",personalID)
-            startActivity(intent)
 
         }
 

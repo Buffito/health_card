@@ -25,8 +25,8 @@ class LoginActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.singInButton).isEnabled = false
         var cardID = ""
-
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val activity = this@LoginActivity
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
         findViewById<CheckBox>(R.id.checkBox).isChecked = sharedPref.getBoolean("remember", false)

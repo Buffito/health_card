@@ -6,7 +6,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.*
 
 class MyProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,27 +20,38 @@ class MyProfileActivity : AppCompatActivity() {
         findViewById<Toolbar>(R.id.toolbar3).title = title
 
         val personalID: String = intent.getStringExtra("personalID").toString()
-        val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
+        val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
         var fname = ""
         var lname = ""
         var name = ""
 
-        fname = databaseRef.child(personalID).child("first name").get().toString()
-        lname = databaseRef.child(personalID).child("last name").get().toString()
-        name = "$fname $lname"
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                fname = snapshot.child("first name").value.toString().trim().toUpperCase(Locale.ROOT)
+                lname = snapshot.child("last name").value.toString().trim().toUpperCase(Locale.ROOT)
+                name = "$fname $lname"
 
-        findViewById<TextView>(R.id.textViewName).text = name
+                findViewById<TextView>(R.id.textViewName).text = name
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
 
         findViewById<Button>(R.id.infoButton).setOnClickListener {
             /// send to info activity
             val intent = Intent(this, ProfileInfoActivity::class.java)
-            intent.putExtra("personalID",personalID)
+            intent.putExtra("personalID", personalID)
             startActivity(intent)
         }
 
         findViewById<Button>(R.id.viewQrButton).setOnClickListener {
             /// send to view qr activity
-            val intent = Intent(this, CreateProfileActivity::class.java)
+            val intent = Intent(this, ViewQrActivity::class.java)
+            intent.putExtra("personalID", personalID)
             startActivity(intent)
         }
 

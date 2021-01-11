@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.*
 
 class ProfileInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,20 +20,43 @@ class ProfileInfoActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-        val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
         val personalID: String = intent.getStringExtra("personalID").toString()
-        val myRef = databaseRef.child(personalID)
+        val activity = this@ProfileInfoActivity
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+        val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
+        val defaultValue = "null"
 
-        findViewById<TextView>(R.id.textViewPersonFirstName).text = myRef.child("first name").get().toString()
-        findViewById<TextView>(R.id.textViewPersonLastName).text = myRef.child("last name").get().toString()
-        findViewById<TextView>(R.id.textViewDate).text = myRef.child("gender").get().toString()
-        findViewById<TextView>(R.id.textViewGender).text = myRef.child("date of birth").get().toString()
-        findViewById<TextView>(R.id.textViewCountryISOCode).text = myRef.child("iso code").get().toString()
-        findViewById<TextView>(R.id.textViewPersonalID).text = myRef.child("personal id").get().toString()
-        findViewById<TextView>(R.id.textViewCardID).text = myRef.child("card id").get().toString()
-        findViewById<TextView>(R.id.textViewVaccineName).text = sharedPref.getString("vaccine_name","nothing")
-        findViewById<TextView>(R.id.textViewDateVaccine).text = sharedPref.getString("vaccine_date","nothing")
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                findViewById<TextView>(R.id.textViewPersonFirstName).text =
+                    snapshot.child("first name").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textViewPersonLastName).text =
+                    snapshot.child("last name").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textViewDate).text =
+                    snapshot.child("gender").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textViewGender).text =
+                    snapshot.child("date of birth").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textViewCountryISOCode).text =
+                    snapshot.child("iso code").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textViewPersonalID).text =
+                    snapshot.child("personal id").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textViewCardID).text =
+                    snapshot.child("card id").value.toString().trim().toUpperCase(Locale.ROOT)
 
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        findViewById<TextView>(R.id.textViewVaccineName).text =
+            sharedPref.getString("vaccine_name", defaultValue)!!
+                .toUpperCase(
+                    Locale.ROOT
+                )
+        findViewById<TextView>(R.id.textViewDateVaccine).text =
+            sharedPref.getString("vaccine_date", defaultValue)!!
+                .toUpperCase(Locale.ROOT)
     }
 }
