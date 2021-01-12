@@ -1,14 +1,19 @@
 package com.theodoroskotoufos.healthcard
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         findViewById<Button>(R.id.loginButton).setOnClickListener {
             /// send to login activity
@@ -24,7 +29,11 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.scanButton).setOnClickListener {
             /// send to qr scanner
+            val intent = Intent(applicationContext, BarcodeCaptureActivity::class.java)
+            startActivity(intent)
+
         }
     }
+
 
 }

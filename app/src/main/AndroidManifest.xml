@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.theodoroskotoufos.healthcard">
 
+    <uses-sdk tools:overrideLibrary="
+      androidx.camera.camera2, androidx.camera.core,
+      androidx.camera.view, androidx.camera.lifecycle" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCard">
         <activity
+            android:name=".BarcodeCaptureActivity"
+            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+        <activity
             android:name=".ViewQrActivity"
             android:label="@string/title_activity_view_qr"
-            android:parentActivityName=".MyProfileActivity"/>
+            android:parentActivityName=".MyProfileActivity" />
         <activity
             android:name=".ProfileInfoActivity"
             android:label="@string/title_activity_profile_info"
@@ -45,6 +52,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CaptureActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="Instantiatable" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

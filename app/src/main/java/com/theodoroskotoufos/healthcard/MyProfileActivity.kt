@@ -13,21 +13,26 @@ import com.google.firebase.database.ValueEventListener
 import java.util.*
 
 class MyProfileActivity : AppCompatActivity() {
+
+    private var personalID: String = ""
+    private var fname: String = ""
+    private var lname: String = ""
+    private var name: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_profile)
         setSupportActionBar(findViewById(R.id.toolbar3))
         findViewById<Toolbar>(R.id.toolbar3).title = title
 
-        val personalID: String = intent.getStringExtra("personalID").toString()
+        personalID = intent.getStringExtra("personalID").toString()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
-        var fname = ""
-        var lname = ""
-        var name = ""
+
 
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                fname = snapshot.child("first name").value.toString().trim().toUpperCase(Locale.ROOT)
+                fname =
+                    snapshot.child("first name").value.toString().trim().toUpperCase(Locale.ROOT)
                 lname = snapshot.child("last name").value.toString().trim().toUpperCase(Locale.ROOT)
                 name = "$fname $lname"
 
@@ -57,6 +62,29 @@ class MyProfileActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.scanQrButton).setOnClickListener {
             /// send to qr scanner
+            val intent = Intent(applicationContext, BarcodeCaptureActivity::class.java)
+            startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
+
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                fname =
+                    snapshot.child("first name").value.toString().trim().toUpperCase(Locale.ROOT)
+                lname = snapshot.child("last name").value.toString().trim().toUpperCase(Locale.ROOT)
+                name = "$fname $lname"
+
+                findViewById<TextView>(R.id.textViewName).text = name
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 }
