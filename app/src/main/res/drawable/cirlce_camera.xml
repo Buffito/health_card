@@ -1,0 +1,20 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="oval">
+            <size android:width="48dp"
+                android:height="48dp"/>
+            <solid android:color="@color/white"/>
+        </shape>
+    </item>
+
+
+    <item>
+        <inset android:drawable="@drawable/camera"
+            android:insetLeft="8dp"
+            android:insetBottom="8dp"
+            android:insetRight="8dp"
+            android:insetTop="8dp"/>
+    </item>
+
+</layer-list>

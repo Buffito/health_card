@@ -15,8 +15,8 @@ class ProfileInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_info)
-        setSupportActionBar(findViewById(R.id.toolbar4))
-        findViewById<Toolbar>(R.id.toolbar4).title = title
+        setSupportActionBar(findViewById(R.id.toolbar3))
+        findViewById<Toolbar>(R.id.toolbar3).title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 

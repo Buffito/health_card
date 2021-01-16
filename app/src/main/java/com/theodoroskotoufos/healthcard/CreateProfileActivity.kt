@@ -11,7 +11,6 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.FirebaseDatabase
 
 
@@ -23,10 +22,10 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_profile)
-        setSupportActionBar(findViewById(R.id.toolbar2))
-        findViewById<Toolbar>(R.id.toolbar2).title = title
+        setSupportActionBar(findViewById(R.id.toolbar))
+        findViewById<Toolbar>(R.id.toolbar).title = title
 
-        findViewById<Button>(R.id.applyButton).isEnabled = false
+        findViewById<Button>(R.id.nextButton).isEnabled = false
         val activity = this@CreateProfileActivity
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
@@ -54,7 +53,7 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         for (i in 0..7) {
             editTextList[i].addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    findViewById<Button>(R.id.applyButton).isEnabled = emptyArrayCheck()
+                    findViewById<Button>(R.id.nextButton).isEnabled = emptyArrayCheck()
                 }
 
                 override fun beforeTextChanged(
@@ -73,13 +72,7 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
 
 
-
-        findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
-            ///start selfie activity
-        }
-
-
-        findViewById<Button>(R.id.applyButton).setOnClickListener {
+        findViewById<Button>(R.id.nextButton).setOnClickListener {
             /// save to firebase/shared preferences and open user profile
 
             if (emptyArrayCheck()) {
@@ -116,14 +109,16 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 }
 
 
-                val intent = Intent(this, MyProfileActivity::class.java)
+                val intent = Intent(this, CameraActivity::class.java)
                 intent.putExtra("personalID", personalID)
+                intent.putExtra("camera","selfie")
                 startActivity(intent)
 
             }
 
 
         }
+
 
 
     }

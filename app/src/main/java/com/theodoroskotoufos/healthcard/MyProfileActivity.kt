@@ -12,8 +12,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
 
-class MyProfileActivity : AppCompatActivity() {
 
+class MyProfileActivity : AppCompatActivity() {
     private var personalID: String = ""
     private var fname: String = ""
     private var lname: String = ""
@@ -22,8 +22,8 @@ class MyProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_profile)
-        setSupportActionBar(findViewById(R.id.toolbar3))
-        findViewById<Toolbar>(R.id.toolbar3).title = title
+        setSupportActionBar(findViewById(R.id.toolbar2))
+        findViewById<Toolbar>(R.id.toolbar2).title = title
 
         personalID = intent.getStringExtra("personalID").toString()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)

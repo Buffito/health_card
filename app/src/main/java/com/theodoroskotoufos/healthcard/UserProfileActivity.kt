@@ -14,8 +14,8 @@ class UserProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
-        setSupportActionBar(findViewById(R.id.toolbar2))
-        findViewById<Toolbar>(R.id.toolbar2).title = title
+        setSupportActionBar(findViewById(R.id.toolbar4))
+        findViewById<Toolbar>(R.id.toolbar4).title = title
 
         val personalID: String = intent.getStringExtra("personalID").toString()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)

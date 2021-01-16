@@ -10,12 +10,13 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
 
 
 class LoginActivity : AppCompatActivity() {
-    var personalID = ""
+    private var personalID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 val snackbar =
                     Snackbar.make(it, "PersonalId or CardId was invalid.", Snackbar.LENGTH_LONG)
-                snackbar.view.setBackgroundColor(resources.getColor(R.color.green))
+                snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
                 snackbar.show()
             }
             login()
