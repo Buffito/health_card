@@ -51,12 +51,12 @@
             android:layout_marginTop="15dp" />
 
         <EditText
-            android:id="@+id/editTextCountryISOCode"
+            android:id="@+id/editTextCountry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:ems="10"
-            android:hint="Country ISO Code"
+            android:hint="Country"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 

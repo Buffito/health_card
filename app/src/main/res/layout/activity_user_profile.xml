@@ -28,7 +28,7 @@
     <include layout="@layout/content_user_profile" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/floatingActionButton2"
         android:layout_width="100dp"
         android:layout_height="104dp"
         android:layout_marginRight="30dp"

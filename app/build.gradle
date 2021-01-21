@@ -4,7 +4,6 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-android-extensions'
 
-
 }
 
 android {
@@ -23,6 +22,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    aaptOptions {
+        noCompress "tflite"  // Prevents compression of tflite files
+        noCompress "lite"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -34,17 +38,16 @@ android {
         }
     }
 
-
-
     compileOptions {
-
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
 
     }
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+
 }
 
 dependencies {
@@ -55,25 +58,22 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    // Firebase and Firebase Storage dependencies
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
+    implementation 'com.firebaseui:firebase-ui-storage:4.3.2'
     implementation 'com.google.firebase:firebase-database:19.6.0'
     implementation 'com.google.firebase:firebase-storage-ktx:19.2.1'
     implementation 'com.google.firebase:firebase-storage:19.2.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation platform('com.google.firebase:firebase-bom:26.2.0')
 
     // QR code dependencies
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
     implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
-
-    implementation 'com.android.support:multidex:1.0.3'
 
     // CameraX core library
     implementation "androidx.camera:camera-core:1.0.0-rc01"
@@ -90,6 +90,15 @@ dependencies {
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
 
-    implementation 'com.github.acefalobi:android-stepper:0.2.1'
+    // Tensorflow dependencies for face recognition
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+    implementation 'org.tensorflow:tensorflow-android:1.13.1'
+
+    // Fragment & Fragment Navigation dependencies
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+
 
 }

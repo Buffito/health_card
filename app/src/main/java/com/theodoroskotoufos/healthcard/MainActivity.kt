@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.createProfileButton).setOnClickListener {
             /// send to create a profile activity
-            val intent = Intent(this, CreateProfileActivity::class.java)
+            val intent = Intent(this, Facerecognition::class.java)
             startActivity(intent)
         }
 

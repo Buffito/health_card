@@ -34,7 +34,7 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             findViewById<EditText>(R.id.editTextPersonFirstName),
             findViewById<EditText>(R.id.editTextPersonLastName),
             findViewById<EditText>(R.id.editTextDate),
-            findViewById<EditText>(R.id.editTextCountryISOCode),
+            findViewById<EditText>(R.id.editTextCountry),
             findViewById<EditText>(R.id.editTextPersonalID),
             findViewById<EditText>(R.id.editTextCardID),
             findViewById<EditText>(R.id.editTextVaccineName),
@@ -87,8 +87,8 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                     .setValue(gender)
                 myRef.child("date of birth")
                     .setValue(findViewById<EditText>(R.id.editTextDate).text.toString())
-                myRef.child("iso code")
-                    .setValue(findViewById<EditText>(R.id.editTextCountryISOCode).text.toString())
+                myRef.child("country")
+                    .setValue(findViewById<EditText>(R.id.editTextCountry).text.toString())
                 myRef.child("personal id")
                     .setValue(personalID)
                 myRef.child("card id")
@@ -111,14 +111,19 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putExtra("personalID", personalID)
-                intent.putExtra("camera","selfie")
+                intent.putExtra("gender", gender)
+                intent.putExtra(
+                    "country",
+                    findViewById<EditText>(R.id.editTextCountry).text.toString()
+                )
+                intent.putExtra("camera", "selfie")
+
                 startActivity(intent)
 
             }
 
 
         }
-
 
 
     }
@@ -137,6 +142,6 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        gender = "male"
+        gender = "Male"
     }
 }

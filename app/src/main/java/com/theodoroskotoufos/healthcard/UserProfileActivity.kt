@@ -31,8 +31,8 @@ class UserProfileActivity : AppCompatActivity() {
                     snapshot.child("gender").value.toString().trim().toUpperCase(Locale.ROOT)
                 findViewById<TextView>(R.id.textGender).text =
                     snapshot.child("date of birth").value.toString().trim().toUpperCase(Locale.ROOT)
-                findViewById<TextView>(R.id.textCountryISOCode).text =
-                    snapshot.child("iso code").value.toString().trim().toUpperCase(Locale.ROOT)
+                findViewById<TextView>(R.id.textCountry).text =
+                    snapshot.child("country").value.toString().trim().toUpperCase(Locale.ROOT)
                 findViewById<TextView>(R.id.textPersonalID).text =
                     snapshot.child("personal id").value.toString().trim().toUpperCase(Locale.ROOT)
                 findViewById<TextView>(R.id.textCardID).text =
