@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -21,10 +22,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        while (!hasPermissions(applicationContext)) {
+        if (!hasPermissions(applicationContext)) {
             // Request camera-related permissions
             requestPermissions(PERMISSIONS_REQUIRED, PERMISSIONS_REQUEST_CODE)
         }
+
         init()
     }
 
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.createProfileButton).setOnClickListener {
             /// send to create a profile activity
-            val intent = Intent(this, Facerecognition::class.java)
+            val intent = Intent(this, CreateProfileActivity::class.java)
             startActivity(intent)
         }
 

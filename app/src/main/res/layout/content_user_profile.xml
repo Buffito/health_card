@@ -13,6 +13,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="First Name"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -24,6 +28,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Last Name"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -35,6 +43,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Date of Birth"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -46,6 +58,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Gender"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -57,6 +73,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Country"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -68,6 +88,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Personal ID"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -79,6 +103,10 @@
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Card ID"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20sp" />
 

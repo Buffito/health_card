@@ -27,16 +27,18 @@
 
     <include layout="@layout/content_profile_info" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image2"
         android:layout_width="100dp"
-        android:layout_height="104dp"
-        android:layout_marginRight="30dp"
-        android:clickable="true"
-        android:foreground="@drawable/camera"
+        android:layout_height="100dp"
+        android:layout_marginEnd="30dp"
+        app:civ_border_width="2dp"
+        android:src="@drawable/background"
         android:foregroundGravity="center_vertical|center_horizontal"
-        app:backgroundTint="@color/white"
+        android:elevation="20dp"
+        app:civ_border_color="#FF000000"
         app:layout_anchor="@+id/app_bar"
-        app:layout_anchorGravity="bottom|center_horizontal" />
+        app:backgroundTint="@color/white"
+        app:layout_anchorGravity="bottom|center_horizontal"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

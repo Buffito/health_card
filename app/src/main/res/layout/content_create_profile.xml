@@ -19,8 +19,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="First Name"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
@@ -29,8 +36,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Last Name"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
@@ -39,13 +53,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Date of Birth"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="date" />
 
         <Spinner
             android:id="@+id/spinner"
+            android:layout_marginStart="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp" />
@@ -54,9 +76,16 @@
             android:id="@+id/editTextCountry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Country"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
@@ -65,8 +94,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Personal ID"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
@@ -75,8 +111,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Card ID"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
@@ -85,8 +128,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Vaccine Name"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="textPersonName" />
 
@@ -95,8 +145,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:ems="10"
             android:hint="Date vaccine given"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/century_gothic_regular"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
             android:imeOptions="actionNext"
             android:inputType="date" />
 
@@ -104,12 +161,17 @@
             android:id="@+id/nextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:layout_marginTop="15dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:enabled="true"
             android:text="Next"
-            android:textColor="@color/white" />
+            android:fontFamily="@font/century_gothic_regular"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:background="@drawable/round_button" />
 
 
     </LinearLayout>

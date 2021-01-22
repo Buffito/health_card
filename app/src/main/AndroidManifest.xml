@@ -20,7 +20,6 @@
         android:theme="@style/Theme.HealthCard">
         <activity
             android:name=".Facerecognition" />
-        <activity android:name=".TestActivity" />
         <activity
             android:name=".CameraActivity"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
@@ -30,7 +29,8 @@
         <activity
             android:name=".ViewQrActivity"
             android:label="@string/title_activity_view_qr"
-            android:parentActivityName=".MyProfileActivity" />
+            android:parentActivityName=".MyProfileActivity"
+            android:theme="@style/Theme.HealthCard.NoActionBar"/>
         <activity
             android:name=".ProfileInfoActivity"
             android:label="@string/title_activity_profile_info"
@@ -50,8 +50,11 @@
             android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity android:name=".MainActivity">
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.HealthCard.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

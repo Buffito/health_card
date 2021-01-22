@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Base application theme. -->
     <style name="Theme.HealthCard" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
@@ -8,10 +8,22 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/green</item>
         <item name="colorSecondaryVariant">@color/green</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.HealthCard.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.HealthCard.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fontFamily="@font/century_gothic_regular"
+        android:textStyle="bold"/>
+
+    <style name="Theme.HealthCard.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"
+        android:fontFamily="@font/century_gothic_regular"
+        android:textStyle="bold"/>
 </resources>

@@ -2,6 +2,7 @@ package com.theodoroskotoufos.healthcard
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +12,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import com.google.firebase.database.FirebaseDatabase
 
 
@@ -22,8 +24,10 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_profile)
+
         setSupportActionBar(findViewById(R.id.toolbar))
         findViewById<Toolbar>(R.id.toolbar).title = title
+
 
         findViewById<Button>(R.id.nextButton).isEnabled = false
         val activity = this@CreateProfileActivity

@@ -28,9 +28,12 @@ class BarcodeCaptureActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
-            if (result.contents == null)
+            if (result.contents == null){
+                val intent = Intent(this, MyProfileActivity::class.java)
+                intent.putExtra("personalID", result.contents)
+                startActivity(intent)
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-            else {
+            } else {
                 val intent = Intent(this, UserProfileActivity::class.java)
                 intent.putExtra("personalID", result.contents)
                 startActivity(intent)
