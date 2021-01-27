@@ -161,17 +161,17 @@
             android:id="@+id/nextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
-            android:enabled="true"
-            android:text="Next"
+            android:background="@drawable/round_button"
+            android:enabled="false"
             android:fontFamily="@font/century_gothic_regular"
             android:gravity="center"
-            android:textStyle="bold"
+            android:text="Next"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:background="@drawable/round_button" />
+            android:textStyle="bold" />
 
 
     </LinearLayout>

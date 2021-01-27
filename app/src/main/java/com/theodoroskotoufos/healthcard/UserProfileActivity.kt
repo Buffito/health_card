@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -30,19 +29,19 @@ class UserProfileActivity : AppCompatActivity() {
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 findViewById<TextView>(R.id.textPersonFirstName).text =
-                    snapshot.child("first name").value.toString().trim()
+                    snapshot.child("first name").value.toString()
                 findViewById<TextView>(R.id.textPersonLastName).text =
-                    snapshot.child("last name").value.toString().trim()
+                    snapshot.child("last name").value.toString()
                 findViewById<TextView>(R.id.textDate).text =
-                    snapshot.child("gender").value.toString().trim()
+                    snapshot.child("gender").value.toString()
                 findViewById<TextView>(R.id.textGender).text =
-                    snapshot.child("date of birth").value.toString().trim()
+                    snapshot.child("date of birth").value.toString()
                 findViewById<TextView>(R.id.textCountry).text =
-                    snapshot.child("country").value.toString().trim()
+                    snapshot.child("country").value.toString()
                 findViewById<TextView>(R.id.textPersonalID).text =
-                    snapshot.child("personal id").value.toString().trim()
+                    snapshot.child("personal id").value.toString()
                 findViewById<TextView>(R.id.textCardID).text =
-                    snapshot.child("card id").value.toString().trim()
+                    snapshot.child("card id").value.toString()
 
             }
 

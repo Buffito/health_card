@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/front_camera_fragment">
+
+    <fragment
+        android:id="@+id/front_camera_fragment"
+        android:label="FrontCameraFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.FrontCameraFragment">
+
+        <action
+            android:id="@+id/action_front_camera_to_back_camera"
+            app:destination="@id/back_camera_fragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/back_camera_fragment"
+        android:label="BackCameraFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.BackCameraFragment">
+        <argument
+            android:name="root_directory"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

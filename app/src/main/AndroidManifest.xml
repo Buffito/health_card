@@ -11,18 +11,20 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCard">
         <activity
-            android:name=".Facerecognition" />
-        <activity
             android:name=".CameraActivity"
-            android:theme="@style/Theme.HealthCard.NoActionBar" />
+            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+        <activity
+            android:name=".Facerecognition"
+            android:theme="@style/Theme.HealthCard.NoActionBar"/>
         <activity
             android:name=".BarcodeCaptureActivity"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
@@ -30,7 +32,7 @@
             android:name=".ViewQrActivity"
             android:label="@string/title_activity_view_qr"
             android:parentActivityName=".MyProfileActivity"
-            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".ProfileInfoActivity"
             android:label="@string/title_activity_profile_info"
@@ -51,7 +53,7 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.HealthCard.NoActionBar">

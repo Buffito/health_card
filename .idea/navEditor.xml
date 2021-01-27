@@ -13,14 +13,14 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="500" />
+                            <option name="x" value="256" />
                             <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="create_profile_fragment">
+                  <entry key="front_camera_fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -31,28 +31,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_permissions_to_camera">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="selfie_camera_fragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="front_camera_to_back_camera">
+                            <entry key="action_camera_to_gallery">
                               <value>
                                 <LayoutPositions />
                               </value>

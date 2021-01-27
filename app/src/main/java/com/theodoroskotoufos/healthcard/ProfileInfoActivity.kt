@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -25,8 +24,7 @@ class ProfileInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile_info)
 
         personalID = intent.getStringExtra("personalID").toString()
-        val activity = this@ProfileInfoActivity
-        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = this@ProfileInfoActivity.getPreferences(Context.MODE_PRIVATE) ?: return
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
         val defaultValue = "null"
 
@@ -35,19 +33,19 @@ class ProfileInfoActivity : AppCompatActivity() {
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 findViewById<TextView>(R.id.textViewPersonFirstName).text =
-                    snapshot.child("first name").value.toString().trim()
+                    snapshot.child("first name").value.toString()
                 findViewById<TextView>(R.id.textViewPersonLastName).text =
-                    snapshot.child("last name").value.toString().trim()
+                    snapshot.child("last name").value.toString()
                 findViewById<TextView>(R.id.textViewDate).text =
-                    snapshot.child("gender").value.toString().trim()
+                    snapshot.child("gender").value.toString()
                 findViewById<TextView>(R.id.textViewGender).text =
-                    snapshot.child("date of birth").value.toString().trim()
+                    snapshot.child("date of birth").value.toString()
                 findViewById<TextView>(R.id.textViewCountry).text =
-                    snapshot.child("country").value.toString().trim()
+                    snapshot.child("country").value.toString()
                 findViewById<TextView>(R.id.textViewPersonalID).text =
-                    snapshot.child("personal id").value.toString().trim()
+                    snapshot.child("personal id").value.toString()
                 findViewById<TextView>(R.id.textViewCardID).text =
-                    snapshot.child("card id").value.toString().trim()
+                    snapshot.child("card id").value.toString()
 
             }
 
@@ -62,7 +60,7 @@ class ProfileInfoActivity : AppCompatActivity() {
             sharedPref.getString("vaccine_date", defaultValue)
     }
 
-    private fun initPhoto(){
+    private fun initPhoto() {
         val imagesRef = FirebaseStorage.getInstance().reference.child("images").child(personalID)
         val selfieRef = imagesRef.child("selfie")
         var selfieFile: File? = null
@@ -72,7 +70,7 @@ class ProfileInfoActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        var selfieBitmap : Bitmap
+        var selfieBitmap: Bitmap
         val finalSelfieFile = selfieFile
         selfieRef.getFile(selfieFile!!)
             .addOnSuccessListener {

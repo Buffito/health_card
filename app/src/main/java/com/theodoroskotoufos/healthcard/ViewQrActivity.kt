@@ -14,7 +14,7 @@ class ViewQrActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_qr)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+       // supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val personalID: String = intent.getStringExtra("personalID").toString()
         val bitmap = generateQRCode(personalID)

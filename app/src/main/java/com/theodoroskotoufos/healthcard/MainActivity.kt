@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -15,7 +14,8 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     private val PERMISSIONS_REQUEST_CODE = 10
-    private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
+    private val PERMISSIONS_REQUIRED =
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.INTERNET)
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,11 +36,11 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (PackageManager.PERMISSION_GRANTED == grantResults.firstOrNull()) {
-                Toast.makeText(applicationContext, "Permission request granted", Toast.LENGTH_LONG)
+                Toast.makeText(applicationContext, "Permission request granted", Toast.LENGTH_SHORT)
                     .show()
 
             } else {
-                Toast.makeText(applicationContext, "Permission request denied", Toast.LENGTH_LONG)
+                Toast.makeText(applicationContext, "Permission request denied", Toast.LENGTH_SHORT)
                     .show()
             }
         }

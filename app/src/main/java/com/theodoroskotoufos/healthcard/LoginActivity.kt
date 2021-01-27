@@ -13,10 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_login.*
 
 
 class LoginActivity : AppCompatActivity() {
     private var personalID = ""
+    private var cardID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,50 +27,26 @@ class LoginActivity : AppCompatActivity() {
         // initializing variables to be used later
 
         findViewById<Button>(R.id.singInButton).isEnabled = false
-        var cardID = ""
-        val activity = this@LoginActivity
-        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
         findViewById<CheckBox>(R.id.checkBox).isChecked = sharedPref.getBoolean("remember", false)
 
-        val editTextList = arrayOf(
-            findViewById<EditText>(R.id.personalID),
-            findViewById<EditText>(R.id.cardID)
-        )
-        val empty = BooleanArray(2)
-        // add text changed listeners to the editTexts
-
-        for (i in 0..1) {
-            editTextList[i].addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    findViewById<Button>(R.id.singInButton).isEnabled = emptyArrayCheck(empty)
-                    personalID = findViewById<EditText>(R.id.personalID).text.toString().trim()
-                    cardID = findViewById<EditText>(R.id.cardID).text.toString().trim()
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    empty[i] = !s.isNullOrEmpty()
-                }
-            })
+        if (sharedPref.getBoolean("remember", false)) {
+            personalID = sharedPref.getString("personalID", "").toString()
+            login()
         }
+
+        initTexts()
 
         // sing in button click listener
 
         findViewById<Button>(R.id.singInButton).setOnClickListener {
             if (sharedPref.getString("personalID", null).equals(personalID) &&
                 sharedPref.getString("cardID", null).equals(cardID)
-            )
+            ) {
                 login()
-            else if (databaseChildExists(databaseRef, personalID) &&
+            } else if (databaseChildExists(databaseRef, personalID) &&
                 databaseRef.child("card id").equals(cardID)
             ) {
                 login()
@@ -78,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
                 snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
                 snackbar.show()
             }
-            login()
         }
 
         // checkBox on/off mechanic
@@ -126,6 +103,37 @@ class LoginActivity : AppCompatActivity() {
         })
 
         return exists
+    }
+
+    private fun initTexts() {
+        val editTextList = arrayOf(
+            findViewById<EditText>(R.id.personalID),
+            findViewById<EditText>(R.id.cardID)
+        )
+        val empty = BooleanArray(2)
+        // add text changed listeners to the editTexts
+
+        for (i in 0..1) {
+            editTextList[i].addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    findViewById<Button>(R.id.singInButton).isEnabled = emptyArrayCheck(empty)
+                    personalID = findViewById<EditText>(R.id.personalID).text.toString().trim()
+                    cardID = findViewById<EditText>(R.id.cardID).text.toString().trim()
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    empty[i] = !s.isNullOrEmpty()
+                }
+            })
+        }
     }
 }
 
