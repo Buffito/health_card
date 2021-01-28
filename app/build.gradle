@@ -75,16 +75,16 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
 
     // CameraX core library
-    implementation "androidx.camera:camera-core:1.0.0-rc01"
+    implementation "androidx.camera:camera-core:1.1.0-alpha01"
 
     // CameraX Camera2 extensions
-    implementation "androidx.camera:camera-camera2:1.0.0-rc01"
+    implementation "androidx.camera:camera-camera2:1.1.0-alpha01"
 
     // CameraX Lifecycle library
-    implementation "androidx.camera:camera-lifecycle:1.0.0-rc01"
+    implementation "androidx.camera:camera-lifecycle:1.1.0-alpha01"
 
     // CameraX View class
-    implementation 'androidx.camera:camera-view:1.0.0-alpha20'
+    implementation 'androidx.camera:camera-view:1.0.0-alpha21'
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -96,11 +96,13 @@ dependencies {
     // Fragment & Fragment Navigation dependencies
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
 
     // Circle ImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation "com.hipo.maskededittext:maskededittext:1.2.10"
 
 
 }

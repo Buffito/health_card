@@ -7,16 +7,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.database.FirebaseDatabase
+import java.util.*
 
 
 class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private var gender: String = ""
-    private var empty = BooleanArray(8)
     private var personalID: String = ""
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -32,33 +33,24 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
         findViewById<Button>(R.id.nextButton).setOnClickListener {
             /// save to firebase/shared preferences and open user profile
+            saveToFirebase()
+            saveToSharedPref()
 
-            if (emptyArrayCheck()) {
+            val intent = Intent(this, CameraActivity::class.java)
+            intent.putExtra("personalID", personalID)
+            intent.putExtra("gender", gender)
+            intent.putExtra(
+                "country",
+                findViewById<EditText>(R.id.editTextCountry).text.toString()
+            )
+            // intent.putExtra("camera", "selfie")
 
-                saveToFirebase()
-                saveToSharedPref()
-
-                val intent = Intent(this, CameraActivity::class.java)
-                 intent.putExtra("personalID", personalID)
-                 intent.putExtra("gender", gender)
-                 intent.putExtra(
-                     "country",
-                     findViewById<EditText>(R.id.editTextCountry).text.toString()
-                 )
-                // intent.putExtra("camera", "selfie")
-
-                startActivity(intent)
-            }
+            startActivity(intent)
         }
     }
 
-    private fun emptyArrayCheck(): Boolean {
-        return empty[0] && empty[1] && empty[2] && empty[3] && empty[4] && empty[5] && empty[6] && empty[7]
-    }
-
-    private fun isDateFormatValid(date: EditText): Boolean {
-        /// check if date is a valid one dd/mm/yyyy
-        return false
+    private fun emptyArrayCheck(array: BooleanArray): Boolean {
+        return array[0] && array[1] && array[2] && array[3] && array[4] && array[5] && array[6] && array[7]
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -81,10 +73,16 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             findViewById<EditText>(R.id.editTextDateVaccine)
         )
 
+        val empty = BooleanArray(8)
+
         for (i in 0..7) {
             editTextList[i].addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    findViewById<Button>(R.id.nextButton).isEnabled = emptyArrayCheck()
+                    if (emptyArrayCheck(empty)) {
+                        findViewById<Button>(R.id.nextButton).isEnabled = emptyArrayCheck(empty)
+                        findViewById<EditText>(R.id.editTextDateVaccine).hideKeyboard()
+                    }
+
                 }
 
                 override fun beforeTextChanged(
@@ -96,7 +94,54 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    empty[i] = !s.isNullOrEmpty()
+                    if (i == 2 || i == 7) {
+
+                        if (s != null) {
+                            var day = false
+                            var month = false
+                            var year = false
+
+                            if (s.length in 5..8) {
+                                val ss = s[0].toString().trim() + s[1].toString().trim()
+                                if (ss.toInt() > 31) {
+                                    editTextList[i].error =
+                                        "Can't have more than 31 days in a month."
+                                } else
+                                    day = true
+
+                            } else if (s.length in 10..13) {
+                                val ss = s[5].toString().trim() + s[6].toString().trim()
+                                if (ss.toInt() > 12) {
+                                    editTextList[i].error =
+                                        "Can't have more than 12 months in a year."
+                                } else
+                                    month = true
+                            } else if (s.length == 14) {
+                                val ss = s[10].toString().trim() + s[11].toString()
+                                    .trim() + s[12].toString().trim() + s[13].toString().trim()
+                                if (ss.toInt() > Calendar.getInstance().get(Calendar.YEAR))
+                                    editTextList[i].error =
+                                        "Are you from the future?"
+                                if (i == 7) {
+                                    if (ss.toInt() > Calendar.getInstance().get(Calendar.YEAR) ||
+                                        (ss.toInt() - Calendar.getInstance().get(Calendar.YEAR) > 1)
+                                    )
+                                        editTextList[i].error =
+                                            "Vaccines for Covid were not out that year."
+                                } else
+                                    year = true
+
+                            }
+
+                            if ((!day && !month && !year) && (s.length == 14)) {
+                                editTextList[i].error = "Invalid date format."
+                                empty[i] = true
+                            } else
+                                empty[i] = false
+
+                        }
+                    } else
+                        empty[i] = !s.isNullOrEmpty()
                 }
             })
         }
@@ -147,5 +192,10 @@ class CreateProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         editor.putString("personalID", personalID)
         editor.putString("cardID", findViewById<EditText>(R.id.editTextCardID).text.toString())
         editor.apply()
+    }
+
+    private fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 }

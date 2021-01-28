@@ -24,7 +24,7 @@ class ProfileInfoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile_info)
 
         personalID = intent.getStringExtra("personalID").toString()
-        val sharedPref = this@ProfileInfoActivity.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = this@ProfileInfoActivity.getPreferences(Context.MODE_PRIVATE)
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
         val defaultValue = "null"
 

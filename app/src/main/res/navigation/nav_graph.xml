@@ -9,6 +9,9 @@
         android:id="@+id/front_camera_fragment"
         android:label="FrontCameraFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.FrontCameraFragment">
+        <argument
+            android:name="root_directory"
+            app:argType="string" />
 
         <action
             android:id="@+id/action_front_camera_to_back_camera"
@@ -20,9 +23,7 @@
         android:id="@+id/back_camera_fragment"
         android:label="BackCameraFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.BackCameraFragment">
-        <argument
-            android:name="root_directory"
-            app:argType="string" />
+
     </fragment>
 
 </navigation>

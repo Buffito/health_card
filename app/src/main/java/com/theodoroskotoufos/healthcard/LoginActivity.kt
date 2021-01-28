@@ -4,8 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -19,6 +23,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : AppCompatActivity() {
     private var personalID = ""
     private var cardID = ""
+    private var exists = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,48 +32,51 @@ class LoginActivity : AppCompatActivity() {
 
         // initializing variables to be used later
 
-        findViewById<Button>(R.id.singInButton).isEnabled = false
-        val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = this@LoginActivity.getPreferences(Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
         findViewById<CheckBox>(R.id.checkBox).isChecked = sharedPref.getBoolean("remember", false)
 
-        if (sharedPref.getBoolean("remember", false)) {
-            personalID = sharedPref.getString("personalID", "").toString()
-            login()
-        }
+        initTexts(editor)
 
-        initTexts()
+        if (findViewById<CheckBox>(R.id.checkBox).isChecked) {
+            login(sharedPref)
+        }
+        sharedPref.getString("personalID", "")?.let { Log.d("SHARED", it) }
 
         // sing in button click listener
-
         findViewById<Button>(R.id.singInButton).setOnClickListener {
-            if (sharedPref.getString("personalID", null).equals(personalID) &&
-                sharedPref.getString("cardID", null).equals(cardID)
-            ) {
-                login()
-            } else if (databaseChildExists(databaseRef, personalID) &&
-                databaseRef.child("card id").equals(cardID)
-            ) {
-                login()
-            } else {
-                val snackbar =
-                    Snackbar.make(it, "PersonalId or CardId was invalid.", Snackbar.LENGTH_LONG)
-                snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-                snackbar.show()
-            }
+            it.hideKeyboard()
+            databaseChildExists(databaseRef)
+            Handler().postDelayed({
+                if (exists) {
+                    login(sharedPref)
+                } else {
+                    val mySnackbar =
+                        Snackbar.make(it, "PersonalId or CardId was invalid.", Snackbar.LENGTH_LONG)
+                    mySnackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
+                    mySnackbar.show()
+                }
+            }, 300)
+
         }
 
         // checkBox on/off mechanic
 
         findViewById<CheckBox>(R.id.checkBox).setOnClickListener {
-            checkBoxOnOff(sharedPref)
+            if (findViewById<CheckBox>(R.id.checkBox).isChecked) {
+                editor.putBoolean("remember", true)
+            } else {
+                editor.putBoolean("remember", false)
+            }
+            editor.apply()
         }
     }
 
-    private fun login() {
+    private fun login(sharedPref: SharedPreferences){
         val intent = Intent(this, MyProfileActivity::class.java)
-        intent.putExtra("personalID", personalID)
+        intent.putExtra("personalID", sharedPref.getString("personalID", ""))
         startActivity(intent)
     }
 
@@ -75,37 +84,25 @@ class LoginActivity : AppCompatActivity() {
         return empty[0] && empty[1]
     }
 
-    private fun checkBoxOnOff(sharedPref: SharedPreferences) {
-        if (findViewById<CheckBox>(R.id.checkBox).isChecked) {
-            with(sharedPref.edit()) {
-                putBoolean("remember", true)
-                apply()
-            }
-        } else {
-            with(sharedPref.edit()) {
-                putBoolean("remember", false)
-                apply()
-            }
-        }
-    }
-
-    private fun databaseChildExists(databaseRef: DatabaseReference, personalID: String): Boolean {
-        var exists = false
+    private fun databaseChildExists(databaseRef: DatabaseReference) {
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.hasChild(personalID))
+                if (snapshot.hasChild(personalID) &&
+                    snapshot.child(personalID).child("card id").value.toString().equals(cardID)
+                ) {
                     exists = true
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                exists = false
+
             }
         })
-
-        return exists
     }
 
-    private fun initTexts() {
+    private fun initTexts(editor: SharedPreferences.Editor) {
         val editTextList = arrayOf(
             findViewById<EditText>(R.id.personalID),
             findViewById<EditText>(R.id.cardID)
@@ -119,6 +116,8 @@ class LoginActivity : AppCompatActivity() {
                     findViewById<Button>(R.id.singInButton).isEnabled = emptyArrayCheck(empty)
                     personalID = findViewById<EditText>(R.id.personalID).text.toString().trim()
                     cardID = findViewById<EditText>(R.id.cardID).text.toString().trim()
+                    editor.putString("personalID", personalID)
+                    editor.apply()
                 }
 
                 override fun beforeTextChanged(
@@ -135,5 +134,11 @@ class LoginActivity : AppCompatActivity() {
             })
         }
     }
+
+    private fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
 }
 

@@ -1,21 +1,24 @@
 package com.theodoroskotoufos.healthcard
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
@@ -29,16 +32,15 @@ class MyProfileActivity : AppCompatActivity() {
     private var lname: String = ""
     private var name: String = ""
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_profile)
 
         personalID = intent.getStringExtra("personalID").toString()
 
+        initButtons()
         initName()
         initPhoto()
-        initButtons()
 
     }
 
@@ -72,15 +74,16 @@ class MyProfileActivity : AppCompatActivity() {
                     snapshot.child("first name").value.toString().trim()
                 lname = snapshot.child("last name").value.toString().trim()
                 name = "$fname $lname"
-
                 findViewById<TextView>(R.id.textViewName).text = name
 
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                name = "Null"
+                findViewById<TextView>(R.id.textViewName).text = name
             }
         })
+
     }
 
     private fun initPhoto(){
@@ -105,8 +108,10 @@ class MyProfileActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        initButtons()
         initName()
         initPhoto()
-        initButtons()
+
     }
+
 }
