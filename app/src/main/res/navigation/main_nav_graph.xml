@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_permissionsFragment"
+            app:destination="@id/permissionsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_barcodeCaptureFragment"
+            app:destination="@id/barcodeCaptureFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/permissionsFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.PermissionsFragment"
+        android:label="PermissionsFragment" >
+        <action
+            android:id="@+id/action_permissionsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.LoginFragment"
+        android:label="LoginFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/barcodeCaptureFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.BarcodeCaptureFragment"
+        android:label="BarcodeCaptureFragment" >
+        <action
+            android:id="@+id/action_barcodeCaptureFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+
+</navigation>

@@ -20,11 +20,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCard">
         <activity
+            android:name=".CreateProfileActivity"
+            android:label="@string/title_activity_create_profile"
+            android:theme="@style/Theme.HealthCard.NoActionBar"></activity>
+        <activity
             android:name=".CameraActivity"
-            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".Facerecognition"
-            android:theme="@style/Theme.HealthCard.NoActionBar"/>
+            android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".BarcodeCaptureActivity"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
@@ -45,14 +49,6 @@
         <activity
             android:name=".UserProfileActivity"
             android:label="@string/title_activity_user_profile"
-            android:theme="@style/Theme.HealthCard.NoActionBar" />
-        <activity
-            android:name=".CreateProfileActivity"
-            android:label="@string/title_activity_create_profile"
-            android:theme="@style/Theme.HealthCard.NoActionBar" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
             android:theme="@style/Theme.HealthCard.NoActionBar" />
         <activity
             android:name=".MainActivity"

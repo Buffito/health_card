@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".CreateProfileActivity"
-    tools:showIn="@layout/activity_create_profile">
+    tools:context=".fragments.CreateProfileFragment"
+    tools:showIn="@layout/fragment_create_profile">
 
 
     <LinearLayout
@@ -18,146 +18,146 @@
             android:id="@+id/editTextPersonFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="First Name"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="First Name"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextPersonLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Last Name"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Last Name"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <com.hipo.maskededittext.MaskedEditText
+        <EditText
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Date of Birth"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Date of Birth"
+            android:maxLength="10"
             android:imeOptions="actionNext"
             android:inputType="date"
-            app:maskType="date"/>
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/spinner"
-            android:layout_marginStart="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="15dp" />
 
         <EditText
             android:id="@+id/editTextCountry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Country"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Country"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextPersonalID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Personal ID"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Personal ID"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextCardID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Card ID"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Card ID"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editTextVaccineName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Vaccine Name"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Vaccine Name"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <com.hipo.maskededittext.MaskedEditText
+        <EditText
             android:id="@+id/editTextDateVaccine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:ems="10"
-            android:hint="Date vaccine given"
-            android:textSize="20sp"
-            android:textColor="@color/black"
             android:fontFamily="@font/century_gothic_regular"
-            android:paddingBottom="4dp"
-            android:textStyle="bold"
+            android:hint="Date vaccine given"
+            android:maxLength="10"
             android:imeOptions="actionNext"
             android:inputType="date"
-            app:maskType="date"/>
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/nextButton"

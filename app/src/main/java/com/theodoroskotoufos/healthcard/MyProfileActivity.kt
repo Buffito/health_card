@@ -1,20 +1,12 @@
 package com.theodoroskotoufos.healthcard
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -23,7 +15,6 @@ import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 
 class MyProfileActivity : AppCompatActivity() {
@@ -61,8 +52,8 @@ class MyProfileActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.scanQrButton).setOnClickListener {
             /// send to qr scanner
-            val intent = Intent(applicationContext, BarcodeCaptureActivity::class.java)
-            startActivity(intent)
+         //   val intent = Intent(applicationContext, BarcodeCaptureActivity::class.java)
+          //  startActivity(intent)
         }
     }
 

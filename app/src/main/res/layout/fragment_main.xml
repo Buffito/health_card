@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_heartbeat"
+    tools:context=".fragments.MainFragment">
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="126dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/century_gothic_regular"
+        android:gravity="bottom|center"
+        android:text="log in"
+        android:foreground="@drawable/log_in"
+        android:foregroundGravity="center_vertical|center_horizontal|fill"
+        android:textColor="@color/black"
+        android:paddingBottom="10dp"
+        android:textStyle="bold"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/createProfileButton"
+        android:layout_width="126dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="84dp"
+        android:foreground="@drawable/create_a_profile"
+        android:foregroundGravity="center_vertical|center_horizontal|fill"
+        android:text="create"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:gravity="bottom|center"
+        android:paddingBottom="10dp"
+        android:textStyle="bold"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintStart_toEndOf="@+id/loginButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/scanButton"
+        android:layout_width="126dp"
+        android:layout_height="129dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="84dp"
+        android:foreground="@drawable/scan_qr"
+        android:foregroundGravity="center_vertical|center_horizontal|fill"
+        android:text="scan qr"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:gravity="bottom|center"
+        android:paddingBottom="10dp"
+        android:textStyle="bold"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

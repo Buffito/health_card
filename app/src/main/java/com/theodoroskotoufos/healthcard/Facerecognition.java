@@ -1,11 +1,16 @@
 package com.theodoroskotoufos.healthcard;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,19 +30,21 @@ public class Facerecognition extends AppCompatActivity {
 
     private Bitmap selfieBitmap, cardBitmap;
     private String gender = "", personalID = "", country = "";
-
+    private ProgressBar progressBar;
     private ArrayList<String> countries;
-
+    AsyncTask<?, ?, ?> runningTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_facerecognition);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setMax(200);
 
-        Intent intent = getIntent();
-        personalID = intent.getStringExtra("personalID");
-        gender = intent.getStringExtra("gender");
-        country = intent.getStringExtra("country");
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        personalID = sharedPref.getString("personalID", "");
+        gender = sharedPref.getString("gender", "");
+        country = sharedPref.getString("country", "");
 
         countries.add("China");
         countries.add("Indonesia");
@@ -56,9 +63,21 @@ public class Facerecognition extends AppCompatActivity {
         countries.add("Timor-Leste");
         countries.add("Brunei");
 
+        if (runningTask != null)
+            runningTask.cancel(true);
+        runningTask = new FaceOperation();
+        runningTask.execute();
+    }
+
+    private void doSomething(){
+        init();
+        new Handler().postDelayed(this::faceRecognition, 1000);
+    }
+
+    private void init(){
         StorageReference imagesRef = FirebaseStorage.getInstance().getReference().child("images").child(personalID);
         StorageReference selfieRef = imagesRef.child("selfie");
-        StorageReference cardRef = imagesRef.child("card front photo");
+        StorageReference cardRef = imagesRef.child("card photo");
 
 
         File selfieFile = null;
@@ -90,9 +109,6 @@ public class Facerecognition extends AppCompatActivity {
         }).addOnFailureListener(exception -> {
             // Handle any errors
         });
-
-        new Handler().postDelayed(this::faceRecognition, 1000);
-
     }
 
     private void faceRecognition() {
@@ -123,7 +139,7 @@ public class Facerecognition extends AppCompatActivity {
                         intent = new Intent(this, MyProfileActivity.class);
                         intent.putExtra("personalID", personalID);
                     } else {
-                        intent = new Intent(this, CreateProfileActivity.class);
+                      //  intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -131,7 +147,7 @@ public class Facerecognition extends AppCompatActivity {
                         intent = new Intent(this, MyProfileActivity.class);
                         intent.putExtra("personalID", personalID);
                     } else {
-                        intent = new Intent(this, CreateProfileActivity.class);
+                       // intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -142,7 +158,7 @@ public class Facerecognition extends AppCompatActivity {
                         intent = new Intent(this, MyProfileActivity.class);
                         intent.putExtra("personalID", personalID);
                     } else {
-                        intent = new Intent(this, CreateProfileActivity.class);
+                      //  intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -150,7 +166,7 @@ public class Facerecognition extends AppCompatActivity {
                         intent = new Intent(this, MyProfileActivity.class);
                         intent.putExtra("personalID", personalID);
                     } else {
-                        intent = new Intent(this, CreateProfileActivity.class);
+                      //  intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -197,6 +213,29 @@ public class Facerecognition extends AppCompatActivity {
             e.printStackTrace();
         }
         return croppedBitmap;
+    }
+
+    private final class FaceOperation extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Guaranteed to run on the UI thread
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            doSomething();
+            return "Executed";
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            progressBar.setVisibility(View.GONE);
+
+        }
     }
 
 }

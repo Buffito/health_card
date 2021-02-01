@@ -1,6 +1,7 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -44,7 +45,7 @@ class FrontCameraFragment : Fragment() {
     private lateinit var viewFinder: PreviewView
 
     private var displayId: Int = -1
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
+    private var lensFacing: Int = CameraSelector.LENS_FACING_FRONT
     private var preview: Preview? = null
     private var imageCapture: ImageCapture? = null
     private var imageAnalyzer: ImageAnalysis? = null
@@ -137,8 +138,8 @@ class FrontCameraFragment : Fragment() {
 
             // Select lensFacing depending on the available cameras
             lensFacing = when {
-                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
-                else -> throw IllegalStateException("Back and front camera are unavailable")
+                hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT
+                else -> throw IllegalStateException("Front camera is unavailable")
             }
 
 
@@ -262,30 +263,33 @@ class FrontCameraFragment : Fragment() {
                 val metadata = Metadata().apply {
 
                     // Mirror image when using the front camera
-                    isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_BACK
+                    isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_FRONT
                 }
 
                 // Setup image capture listener which is triggered after photo has been taken
                 imageCapture.takePicture(ContextCompat.getMainExecutor(activity),
                     object : ImageCapture.OnImageCapturedCallback() {
                         override fun onCaptureSuccess(image: ImageProxy) {
+                        /*    val personalID = sharedPref.getString("personalID", "")
                             viewFinder.isDrawingCacheEnabled = true
                             viewFinder.buildDrawingCache()
                             val baos = ByteArrayOutputStream()
                             viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                             val data = baos.toByteArray()
-                            val imagesRef =
-                                Firebase.storage.reference.child("images")//.child(personalID).child("selfie")
+                            val imagesRef = Firebase.storage.reference.child("images")
+                                .child(personalID.toString()).child("selfie")
                             val uploadTask = imagesRef.putBytes(data)
-                            //builder.show()
+                            val builder = AlertDialog.Builder(container.context)
+                            builder.setMessage("Uploading photo...")
+                            builder.setTitle("Please wait...")
+                            builder.show()
                             uploadTask.addOnFailureListener {
                                 // Handle unsuccessful uploads
-                                findNavController().navigate(R.id.action_front_camera_to_back_camera)
                             }.addOnSuccessListener {
                                 // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
                                 // ...
-
-                            }
+                                findNavController().navigate(R.id.action_front_camera_to_back_camera)
+                            } */
                         }
                     })
             }
@@ -295,8 +299,8 @@ class FrontCameraFragment : Fragment() {
     }
 
 
-    private fun hasBackCamera(): Boolean {
-        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA) ?: false
+    private fun hasFrontCamera(): Boolean {
+        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) ?: false
     }
 
 
@@ -307,8 +311,6 @@ class FrontCameraFragment : Fragment() {
         private var lastAnalyzedTimestamp = 0L
         var framesPerSecond: Double = -1.0
             private set
-
-        fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
 
         private fun ByteBuffer.toByteArray(): ByteArray {
             rewind()    // Rewind the buffer to zero

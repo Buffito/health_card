@@ -1,7 +1,9 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -10,6 +12,7 @@ import android.graphics.drawable.ColorDrawable
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +20,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.camera.core.*
-import androidx.camera.core.ImageCapture.Metadata
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -136,8 +138,8 @@ class BackCameraFragment : Fragment() {
 
             // Select lensFacing depending on the available cameras
             lensFacing = when {
-                hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT
-                else -> throw IllegalStateException("Back and front camera are unavailable")
+                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
+                else -> throw IllegalStateException("Back is unavailable")
             }
 
 
@@ -257,33 +259,30 @@ class BackCameraFragment : Fragment() {
             imageCapture?.let { imageCapture ->
 
 
-                // Setup image capture metadata
-                val metadata = Metadata().apply {
-
-                    // Mirror image when using the front camera
-                    isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_BACK
-                }
-
                 // Setup image capture listener which is triggered after photo has been taken
                 imageCapture.takePicture(ContextCompat.getMainExecutor(activity),
                     object : ImageCapture.OnImageCapturedCallback() {
                         override fun onCaptureSuccess(image: ImageProxy) {
+                        /*    val personalID = sharedPref.getString("personalID", "")
                             viewFinder.isDrawingCacheEnabled = true
                             viewFinder.buildDrawingCache()
                             val baos = ByteArrayOutputStream()
                             viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                             val data = baos.toByteArray()
-                            val imagesRef =
-                                Firebase.storage.reference.child("images")//.child(personalID).child("selfie")
+                            val imagesRef = Firebase.storage.reference.child("images").child(personalID.toString()).child("card photo")
                             val uploadTask = imagesRef.putBytes(data)
-                            //builder.show()
+                            val builder = AlertDialog.Builder(container.context)
+                            builder.setMessage("Uploading photo...")
+                            builder.setTitle("Please wait...")
+                            builder.show()
                             uploadTask.addOnFailureListener {
                                 // Handle unsuccessful uploads
                             }.addOnSuccessListener {
                                 // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
                                 // ...
-
-                            }
+                                val intent = Intent(context, Facerecognition::class.java)
+                                startActivity(intent)
+                            } */
                         }
                     })
             }
@@ -292,9 +291,8 @@ class BackCameraFragment : Fragment() {
 
     }
 
-
-    private fun hasFrontCamera(): Boolean {
-        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) ?: false
+    private fun hasBackCamera(): Boolean {
+        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA) ?: false
     }
 
     private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {
@@ -304,8 +302,6 @@ class BackCameraFragment : Fragment() {
         private var lastAnalyzedTimestamp = 0L
         var framesPerSecond: Double = -1.0
             private set
-
-        fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
 
         private fun ByteBuffer.toByteArray(): ByteArray {
             rewind()    // Rewind the buffer to zero
