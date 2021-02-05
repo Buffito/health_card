@@ -1,7 +1,6 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -17,10 +16,8 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
-import com.theodoroskotoufos.healthcard.MyProfileActivity
 import com.theodoroskotoufos.healthcard.R
 
 class LoginFragment : Fragment() {
@@ -49,7 +46,7 @@ class LoginFragment : Fragment() {
         initTexts(editor,view)
 
         if (view.findViewById<CheckBox>(R.id.checkBox).isChecked) {
-            login(sharedPref)
+            login()
         }
 
         view.findViewById<Button>(R.id.singInButton).setOnClickListener {
@@ -57,7 +54,7 @@ class LoginFragment : Fragment() {
             databaseChildExists(databaseRef)
             Handler().postDelayed({
                 if (exists) {
-                    login(sharedPref)
+                    login()
                 } else {
                     val mySnackbar =
                         Snackbar.make(it, "PersonalId or CardId was invalid.", Snackbar.LENGTH_LONG)
@@ -80,10 +77,10 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun login(sharedPref: SharedPreferences){
-        val intent = Intent(activity, MyProfileActivity::class.java)
-        intent.putExtra("personalID", sharedPref.getString("personalID", ""))
-        startActivity(intent)
+    private fun login(){
+        Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+            R.id.action_loginFragment_to_myProfileFragment
+        )
     }
 
     private fun initTexts(editor: SharedPreferences.Editor, view: View) {

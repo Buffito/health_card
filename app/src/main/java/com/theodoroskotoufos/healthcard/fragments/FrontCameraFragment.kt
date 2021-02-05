@@ -102,8 +102,6 @@ class FrontCameraFragment : Fragment() {
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Set up the intent filter that will receive events from our main activity
-        val filter = IntentFilter().apply { addAction(KEY_EVENT_ACTION) }
 
         // Every time the orientation of device changes, update rotation for use cases
         displayManager.registerDisplayListener(displayListener, null)
@@ -270,26 +268,26 @@ class FrontCameraFragment : Fragment() {
                 imageCapture.takePicture(ContextCompat.getMainExecutor(activity),
                     object : ImageCapture.OnImageCapturedCallback() {
                         override fun onCaptureSuccess(image: ImageProxy) {
-                        /*    val personalID = sharedPref.getString("personalID", "")
-                            viewFinder.isDrawingCacheEnabled = true
-                            viewFinder.buildDrawingCache()
-                            val baos = ByteArrayOutputStream()
-                            viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                            val data = baos.toByteArray()
-                            val imagesRef = Firebase.storage.reference.child("images")
-                                .child(personalID.toString()).child("selfie")
-                            val uploadTask = imagesRef.putBytes(data)
-                            val builder = AlertDialog.Builder(container.context)
-                            builder.setMessage("Uploading photo...")
-                            builder.setTitle("Please wait...")
-                            builder.show()
-                            uploadTask.addOnFailureListener {
-                                // Handle unsuccessful uploads
-                            }.addOnSuccessListener {
-                                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-                                // ...
-                                findNavController().navigate(R.id.action_front_camera_to_back_camera)
-                            } */
+                            /*    val personalID = sharedPref.getString("personalID", "")
+                                viewFinder.isDrawingCacheEnabled = true
+                                viewFinder.buildDrawingCache()
+                                val baos = ByteArrayOutputStream()
+                                viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                                val data = baos.toByteArray()
+                                val imagesRef = Firebase.storage.reference.child("images")
+                                    .child(personalID.toString()).child("selfie")
+                                val uploadTask = imagesRef.putBytes(data)
+                                val builder = AlertDialog.Builder(container.context)
+                                builder.setMessage("Uploading photo...")
+                                builder.setTitle("Please wait...")
+                                builder.show()
+                                uploadTask.addOnFailureListener {
+                                    // Handle unsuccessful uploads
+                                }.addOnSuccessListener {
+                                    // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                                    // ...
+                                    findNavController().navigate(R.id.action_front_camera_to_back_camera)
+                                } */
                         }
                     })
             }

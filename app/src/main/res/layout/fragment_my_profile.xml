@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_heartbeat"
+    android:fitsSystemWindows="true"
+    tools:context=".fragments.MyProfileFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:fitsSystemWindows="true"
+        android:theme="@style/Theme.HealthCard.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/Theme.HealthCard.PopupOverlay" />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content_my_profile" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_marginEnd="30dp"
+        app:civ_border_width="2dp"
+        android:src="@drawable/background"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:elevation="20dp"
+        app:civ_border_color="#FF000000"
+        app:layout_anchor="@+id/app_bar"
+        app:backgroundTint="@color/white"
+        app:layout_anchorGravity="bottom|center_horizontal"/>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

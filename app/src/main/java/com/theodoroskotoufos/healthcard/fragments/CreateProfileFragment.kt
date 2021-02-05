@@ -1,7 +1,6 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,10 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.google.firebase.database.FirebaseDatabase
-import com.theodoroskotoufos.healthcard.CameraActivity
 import com.theodoroskotoufos.healthcard.R
 import kotlinx.android.synthetic.main.fragment_create_profile.*
 import java.util.*
@@ -44,8 +42,9 @@ class CreateProfileFragment : Fragment()  {
             saveToFirebase(view)
             saveToSharedPref(view)
 
-            val intent = Intent(requireActivity(), CameraActivity::class.java)
-            startActivity(intent)
+            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+                R.id.action_create_profile_fragment_to_front_camera_fragment
+            )
         }
     }
 

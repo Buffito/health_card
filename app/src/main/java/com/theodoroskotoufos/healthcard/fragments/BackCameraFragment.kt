@@ -1,18 +1,13 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,11 +20,8 @@ import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.theodoroskotoufos.healthcard.*
 import com.theodoroskotoufos.healthcard.R
-import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -42,7 +34,7 @@ import kotlin.math.min
 
 class BackCameraFragment : Fragment() {
     private lateinit var container: ConstraintLayout
-    private lateinit var viewFinder: PreviewView
+    private lateinit var viewFinder2: PreviewView
 
     private var displayId: Int = -1
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
@@ -90,29 +82,27 @@ class BackCameraFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? =
-        inflater.inflate(R.layout.fragment_front_camera, container, false)
+        inflater.inflate(R.layout.fragment_back_camera, container, false)
 
 
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         container = view as ConstraintLayout
-        viewFinder = container.findViewById(R.id.view_finder)
+        viewFinder2 = container.findViewById(R.id.view_finder2)
 
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Set up the intent filter that will receive events from our main activity
-        val filter = IntentFilter().apply { addAction(KEY_EVENT_ACTION) }
 
         // Every time the orientation of device changes, update rotation for use cases
         displayManager.registerDisplayListener(displayListener, null)
 
         // Wait for the views to be properly laid out
-        viewFinder.post {
+        viewFinder2.post {
 
             // Keep track of the display in which this view is attached
-            displayId = viewFinder.display.displayId
+            displayId = viewFinder2.display.displayId
 
             // Build UI controls
             updateCameraUi()
@@ -152,13 +142,13 @@ class BackCameraFragment : Fragment() {
     private fun bindCameraUseCases() {
 
         // Get screen metrics used to setup camera for full screen resolution
-        val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
+        val metrics = DisplayMetrics().also { viewFinder2.display.getRealMetrics(it) }
         Log.d(TAG, "Screen metrics: ${metrics.widthPixels} x ${metrics.heightPixels}")
 
         val screenAspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
         Log.d(TAG, "Preview aspect ratio: $screenAspectRatio")
 
-        val rotation = viewFinder.display.rotation
+        val rotation = viewFinder2.display.rotation
 
         // CameraProvider
         val cameraProvider = cameraProvider
@@ -214,8 +204,8 @@ class BackCameraFragment : Fragment() {
                 this, cameraSelector, preview, imageCapture, imageAnalyzer
             )
 
-            // Attach the viewfinder's surface provider to preview use case
-            preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+            // Attach the viewFinder's surface provider to preview use case
+            preview?.setSurfaceProvider(viewFinder2.surfaceProvider)
         } catch (exc: Exception) {
             Log.e(TAG, "Use case binding failed", exc)
         }
@@ -263,26 +253,24 @@ class BackCameraFragment : Fragment() {
                 imageCapture.takePicture(ContextCompat.getMainExecutor(activity),
                     object : ImageCapture.OnImageCapturedCallback() {
                         override fun onCaptureSuccess(image: ImageProxy) {
-                        /*    val personalID = sharedPref.getString("personalID", "")
-                            viewFinder.isDrawingCacheEnabled = true
-                            viewFinder.buildDrawingCache()
-                            val baos = ByteArrayOutputStream()
-                            viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                            val data = baos.toByteArray()
-                            val imagesRef = Firebase.storage.reference.child("images").child(personalID.toString()).child("card photo")
-                            val uploadTask = imagesRef.putBytes(data)
-                            val builder = AlertDialog.Builder(container.context)
-                            builder.setMessage("Uploading photo...")
-                            builder.setTitle("Please wait...")
-                            builder.show()
-                            uploadTask.addOnFailureListener {
-                                // Handle unsuccessful uploads
-                            }.addOnSuccessListener {
-                                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-                                // ...
-                                val intent = Intent(context, Facerecognition::class.java)
-                                startActivity(intent)
-                            } */
+                            /*    val personalID = sharedPref.getString("personalID", "")
+                                viewFinder.isDrawingCacheEnabled = true
+                                viewFinder.buildDrawingCache()
+                                val baos = ByteArrayOutputStream()
+                                viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                                val data = baos.toByteArray()
+                                val imagesRef = Firebase.storage.reference.child("images").child(personalID.toString()).child("card photo")
+                                val uploadTask = imagesRef.putBytes(data)
+                                val builder = AlertDialog.Builder(container.context)
+                                builder.setMessage("Uploading photo...")
+                                builder.setTitle("Please wait...")
+                                builder.show()
+                                uploadTask.addOnFailureListener {
+                                    // Handle unsuccessful uploads
+                                }.addOnSuccessListener {
+                                    // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                                    // ...
+                                } */
                         }
                     })
             }

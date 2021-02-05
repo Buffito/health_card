@@ -136,15 +136,15 @@ public class Facerecognition extends AppCompatActivity {
             if (gender.equals("Male")) {
                 if (countries.contains(country)) {
                     if (score < 15.00) {
-                        intent = new Intent(this, MyProfileActivity.class);
-                        intent.putExtra("personalID", personalID);
+                      //  intent = new Intent(this, MyProfileActivity.class);
+                      //  intent.putExtra("personalID", personalID);
                     } else {
                       //  intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     if (score < 24.00) {
-                        intent = new Intent(this, MyProfileActivity.class);
+                       // intent = new Intent(this, MyProfileActivity.class);
                         intent.putExtra("personalID", personalID);
                     } else {
                        // intent = new Intent(this, CreateProfileActivity.class);
@@ -155,16 +155,16 @@ public class Facerecognition extends AppCompatActivity {
             } else if (gender.equals("Female")) {
                 if (countries.contains(country)) {
                     if (score < 8.00) {
-                        intent = new Intent(this, MyProfileActivity.class);
-                        intent.putExtra("personalID", personalID);
+                      //  intent = new Intent(this, MyProfileActivity.class);
+                      //  intent.putExtra("personalID", personalID);
                     } else {
                       //  intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     if (score < 17.00) {
-                        intent = new Intent(this, MyProfileActivity.class);
-                        intent.putExtra("personalID", personalID);
+                      //  intent = new Intent(this, MyProfileActivity.class);
+                      //  intent.putExtra("personalID", personalID);
                     } else {
                       //  intent = new Intent(this, CreateProfileActivity.class);
                         Toast.makeText(getApplicationContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
