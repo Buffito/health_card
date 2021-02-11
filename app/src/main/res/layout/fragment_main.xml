@@ -9,10 +9,10 @@
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="126dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="84dp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_85sdp"
         android:fontFamily="@font/century_gothic_regular"
         android:gravity="bottom|center"
         android:text="log in"
@@ -27,10 +27,10 @@
 
     <Button
         android:id="@+id/createProfileButton"
-        android:layout_width="126dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="84dp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_85sdp"
         android:foreground="@drawable/create_a_profile"
         android:foregroundGravity="center_vertical|center_horizontal|fill"
         android:text="create"
@@ -45,10 +45,10 @@
 
     <Button
         android:id="@+id/scanButton"
-        android:layout_width="126dp"
-        android:layout_height="129dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="84dp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_85sdp"
         android:foreground="@drawable/scan_qr"
         android:foregroundGravity="center_vertical|center_horizontal|fill"
         android:text="scan qr"

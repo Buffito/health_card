@@ -15,10 +15,10 @@
             app:destination="@id/permissionsFragment" />
         <action
             android:id="@+id/action_mainFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/navigation2" />
         <action
             android:id="@+id/action_mainFragment_to_create_profile_fragment"
-            app:destination="@id/createProfileFragment" />
+            app:destination="@id/navigation" />
         <action
             android:id="@+id/action_mainFragment_to_user_profile_fragment"
             app:destination="@id/userProfileFragment" />
@@ -34,38 +34,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/myProfileFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.MyProfileFragment"
-        android:label="MyProfileFragment"
-        tools:layout="@layout/fragment_my_profile">
-        <action
-            android:id="@+id/action_myProfileFragment_to_viewQrFragment"
-            app:destination="@id/viewQrFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_profileInfoFragment"
-            app:destination="@id/profileInfoFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/viewQrFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.ViewQrFragment"
-        android:label="ViewQrFragment"
-        tools:layout="@layout/fragment_view_qr" />
-
-    <fragment
         android:id="@+id/userProfileFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.UserProfileFragment"
         android:label="UserProfileFragment"
@@ -76,49 +44,108 @@
             app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_userProfileFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/createProfileFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment"
-        android:label="CreateProfileFragment"
-        tools:layout="@layout/fragment_create_profile">
-
-        <action
-            android:id="@+id/action_create_profile_fragment_to_front_camera_fragment"
-            app:destination="@id/frontCameraFragment" />
+            app:destination="@id/navigation2" />
     </fragment>
 
 
-    <fragment
-        android:id="@+id/frontCameraFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.FrontCameraFragment"
-        android:label="FrontCameraFragment"
-        tools:layout="@layout/fragment_front_camera">
+    <navigation android:id="@+id/navigation"
+        app:startDestination="@id/createProfileFragment">
+        <fragment
+            android:id="@+id/filler"
+            android:name="com.theodoroskotoufos.healthcard.fragments.Filler"
+            android:label="fragment_filler"
+            tools:layout="@layout/fragment_filler">
+            <action
+                android:id="@+id/action_filler_to_frontCameraFragment"
+                app:destination="@id/frontCameraFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/createProfileFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment"
+            android:label="CreateProfileFragment"
+            tools:layout="@layout/fragment_create_profile">
+            <action
+                android:id="@+id/action_createProfileFragment_to_filler"
+                app:destination="@id/filler" />
+        </fragment>
+        <fragment
+            android:id="@+id/frontCameraFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.FrontCameraFragment"
+            android:label="FrontCameraFragment"
+            tools:layout="@layout/fragment_front_camera">
+            <action
+                android:id="@+id/action_frontCameraFragment_to_filler2"
+                app:destination="@id/filler2" />
+        </fragment>
+        <fragment
+            android:id="@+id/filler2"
+            android:name="com.theodoroskotoufos.healthcard.fragments.Filler2"
+            android:label="fragment_filler2"
+            tools:layout="@layout/fragment_filler2">
+            <action
+                android:id="@+id/action_filler2_to_backCameraFragment"
+                app:destination="@id/backCameraFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/backCameraFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.BackCameraFragment"
+            android:label="BackCameraFragment"
+            tools:layout="@layout/fragment_back_camera">
 
-        <action
-            android:id="@+id/action_front_camera_to_back_camera"
-            app:destination="@id/backCameraFragment" />
+            <action
+                android:id="@+id/action_backCameraFragment_to_faceRecognitionFragment"
+                app:destination="@id/faceRecognitionFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/faceRecognitionFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.FaceRecognitionFragment"
+            android:label="fragment_face_recognition"
+            tools:layout="@layout/fragment_face_recognition">
+            <action
+                android:id="@+id/action_faceRecognitionFragment_to_myProfileFragment"
+                app:destination="@id/navigation2" />
+            <action
+                android:id="@+id/action_faceRecognitionFragment_to_createProfileFragment"
+                app:destination="@id/createProfileFragment" />
+        </fragment>
+    </navigation>
+    <navigation android:id="@+id/navigation2"
+        app:startDestination="@id/myProfileFragment">
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.LoginFragment"
+            android:label="LoginFragment"
+            tools:layout="@layout/fragment_login">
+            <action
+                android:id="@+id/action_loginFragment_to_myProfileFragment"
+                app:destination="@id/myProfileFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/viewQrFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.ViewQrFragment"
+            android:label="ViewQrFragment"
+            tools:layout="@layout/fragment_view_qr" />
+        <fragment
+            android:id="@+id/myProfileFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.MyProfileFragment"
+            android:label="MyProfileFragment"
+            tools:layout="@layout/fragment_my_profile">
+            <action
+                android:id="@+id/action_myProfileFragment_to_viewQrFragment"
+                app:destination="@id/viewQrFragment" />
+            <action
+                android:id="@+id/action_myProfileFragment_to_userProfileFragment"
+                app:destination="@id/userProfileFragment" />
+            <action
+                android:id="@+id/action_myProfileFragment_to_profileInfoFragment"
+                app:destination="@id/profileInfoFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/profileInfoFragment"
+            android:name="com.theodoroskotoufos.healthcard.fragments.ProfileInfoFragment"
+            android:label="ProfileInfoFragment"
+            tools:layout="@layout/fragment_profile_info" />
+    </navigation>
 
-    </fragment>
-
-    <fragment
-        android:id="@+id/backCameraFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.BackCameraFragment"
-        android:label="BackCameraFragment"
-        tools:layout="@layout/fragment_back_camera">
-
-    </fragment>
-    <fragment
-        android:id="@+id/profileInfoFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.ProfileInfoFragment"
-        android:label="ProfileInfoFragment"
-        tools:layout="@layout/fragment_profile_info" />
-    <fragment
-        android:id="@+id/fullscreenFragment"
-        android:name="com.theodoroskotoufos.healthcard.FullscreenFragment"
-        android:label="fragment_fullscreen"
-        tools:layout="@layout/fragment_fullscreen" />
 
 </navigation>

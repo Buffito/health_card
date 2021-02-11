@@ -1,27 +1,40 @@
-package com.theodoroskotoufos.healthcard.fragments
+ package com.theodoroskotoufos.healthcard.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageButton
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.theodoroskotoufos.healthcard.*
 import com.theodoroskotoufos.healthcard.R
+import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -32,7 +45,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class BackCameraFragment : Fragment() {
+ class BackCameraFragment : Fragment() {
+    private val hideHandler = Handler()
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder2: PreviewView
 
@@ -55,6 +69,31 @@ class BackCameraFragment : Fragment() {
         requireContext().getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
     }
 
+    @Suppress("InlinedApi")
+    private val hidePart2Runnable = Runnable {
+        // Delayed removal of status and navigation bar
+
+        // Note that some of these constants are new as of API 16 (Jelly Bean)
+        // and API 19 (KitKat). It is safe to use them, as they are inlined
+        // at compile-time and do nothing on earlier devices.
+        val flags =
+            View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                    View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        activity?.window?.decorView?.systemUiVisibility = flags
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+    }
+    private val showPart2Runnable = Runnable {
+        // Delayed display of UI elements
+        fullscreenContentControls?.visibility = View.VISIBLE
+    }
+    private var visible: Boolean = false
+    private val hideRunnable = Runnable { hide() }
+
+    private var fullscreenContentControls: View? = null
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
 
@@ -90,6 +129,7 @@ class BackCameraFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         container = view as ConstraintLayout
         viewFinder2 = container.findViewById(R.id.view_finder2)
+        visible = true
 
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -248,29 +288,56 @@ class BackCameraFragment : Fragment() {
             // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
 
+                val mainKey = MasterKey.Builder(requireContext())
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build()
+
+                val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+                    requireActivity(),
+                    "sharedPrefsFile",
+                    mainKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
+
+                val personalID = sharedPref.getString("personalID", "").toString().trim()
+
+                val builder = AlertDialog.Builder(requireActivity())
+                builder.setMessage("Uploading photo...")
+                builder.setTitle("Please wait...")
+                val alert = builder.create()
 
                 // Setup image capture listener which is triggered after photo has been taken
                 imageCapture.takePicture(ContextCompat.getMainExecutor(activity),
                     object : ImageCapture.OnImageCapturedCallback() {
                         override fun onCaptureSuccess(image: ImageProxy) {
-                            /*    val personalID = sharedPref.getString("personalID", "")
-                                viewFinder.isDrawingCacheEnabled = true
-                                viewFinder.buildDrawingCache()
-                                val baos = ByteArrayOutputStream()
-                                viewFinder.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                                val data = baos.toByteArray()
-                                val imagesRef = Firebase.storage.reference.child("images").child(personalID.toString()).child("card photo")
-                                val uploadTask = imagesRef.putBytes(data)
-                                val builder = AlertDialog.Builder(container.context)
-                                builder.setMessage("Uploading photo...")
-                                builder.setTitle("Please wait...")
-                                builder.show()
-                                uploadTask.addOnFailureListener {
-                                    // Handle unsuccessful uploads
-                                }.addOnSuccessListener {
-                                    // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-                                    // ...
-                                } */
+                            viewFinder2.isDrawingCacheEnabled = true
+                            viewFinder2.buildDrawingCache()
+                            val baos = ByteArrayOutputStream()
+                            viewFinder2.bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                            val data = baos.toByteArray()
+                            val imagesRef = Firebase.storage.reference.child("images").child(
+                                personalID
+                            ).child("card photo")
+                            val uploadTask = imagesRef.putBytes(data)
+
+                            alert.show()
+                            uploadTask.addOnFailureListener {
+                                // Handle unsuccessful uploads
+                            }.addOnSuccessListener {
+                                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                                // ...
+                                alert.dismiss()
+
+                                Navigation.findNavController(
+                                    requireActivity(),
+                                    R.id.fragment_container
+                                ).navigate(
+                                    R.id.action_backCameraFragment_to_faceRecognitionFragment
+                                )
+
+
+                            }
                         }
                     })
             }
@@ -338,6 +405,81 @@ class BackCameraFragment : Fragment() {
 
             image.close()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
+        // Trigger the initial hide() shortly after the activity has been
+        // created, to briefly hint to the user that UI controls
+        // are available.
+        delayedHide(100)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
+        // Clear the systemUiVisibility flag
+        activity?.window?.decorView?.systemUiVisibility = 0
+        show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fullscreenContentControls = null
+    }
+
+    private fun hide() {
+        // Hide UI first
+        fullscreenContentControls?.visibility = View.GONE
+        visible = false
+
+        // Schedule a runnable to remove the status and navigation bar after a delay
+        hideHandler.removeCallbacks(showPart2Runnable)
+        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
+    }
+
+    @Suppress("InlinedApi")
+    private fun show() {
+        // Show the system bar
+
+        visible = true
+
+        // Schedule a runnable to display UI elements after a delay
+        hideHandler.removeCallbacks(hidePart2Runnable)
+        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
+    }
+
+    /**
+     * Schedules a call to hide() in [delayMillis], canceling any
+     * previously scheduled calls.
+     */
+    private fun delayedHide(delayMillis: Int) {
+        hideHandler.removeCallbacks(hideRunnable)
+        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
+    }
+
+    companion object {
+        /**
+         * Whether or not the system UI should be auto-hidden after
+         * [AUTO_HIDE_DELAY_MILLIS] milliseconds.
+         */
+        private const val AUTO_HIDE = true
+
+        /**
+         * If [AUTO_HIDE] is set, the number of milliseconds to wait after
+         * user interaction before hiding the system UI.
+         */
+        private const val AUTO_HIDE_DELAY_MILLIS = 3000
+
+        /**
+         * Some older devices needs a small delay between UI widget updates
+         * and a change of the status and navigation bar.
+         */
+        private const val UI_ANIMATION_DELAY = 300
     }
 
 }

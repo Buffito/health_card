@@ -1,6 +1,7 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,12 +12,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import androidx.security.crypto.MasterKeys
 import com.google.firebase.database.FirebaseDatabase
 import com.theodoroskotoufos.healthcard.R
 import kotlinx.android.synthetic.main.fragment_create_profile.*
 import java.util.*
 
-class CreateProfileFragment : Fragment()  {
+class CreateProfileFragment : Fragment() {
     private var gender: String = ""
     private var personalID: String = ""
 
@@ -32,7 +36,7 @@ class CreateProfileFragment : Fragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbar.title = "Create Profile";
+        toolbar.title = "Create Profile"
 
         initTexts(view)
         initSpinner(view)
@@ -42,8 +46,9 @@ class CreateProfileFragment : Fragment()  {
             saveToFirebase(view)
             saveToSharedPref(view)
 
+
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                R.id.action_create_profile_fragment_to_front_camera_fragment
+                R.id.action_createProfileFragment_to_filler
             )
         }
     }
@@ -74,6 +79,7 @@ class CreateProfileFragment : Fragment()  {
                         view.findViewById<Button>(R.id.nextButton).isEnabled =
                             emptyArrayCheck(notEmpty)
                         editTextList[i].hideKeyboard()
+                        view.findViewById<Button>(R.id.nextButton).requestFocus()
                     }
 
                 }
@@ -88,42 +94,52 @@ class CreateProfileFragment : Fragment()  {
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (i == 2 || i == 7) {
-                        if (s != null) {
-                            if (s.isNotEmpty()) {
-                                val regex =
-                                    "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))\$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$".toRegex()
-                                if (!s.toString().contains(regex)) {
-                                    editTextList[i].error =
-                                        "Invalid date format."
+                        dateCheck(s, i, editTextList, notEmpty)
+                        return
+                    }
 
-                                    notEmpty[i] = false
-                                } else {
-                                    if (s.length == 10) {
-                                        val ss =
-                                            s[6].toString() + s[7].toString() + s[8].toString() + s[9].toString()
-                                        if (ss.toInt() > Calendar.getInstance()
-                                                .get(Calendar.YEAR)
-                                        ) {
-                                            editTextList[i].error =
-                                                "Are you from the future bud?"
-
-                                            notEmpty[i] = false
-                                        } else
-
-                                            notEmpty[i] = true
-                                    }
-
-
-                                }
-
-                            }
-                        }
-
-                    } else
-                        notEmpty[i] = !s.isNullOrEmpty()
+                    notEmpty[i] = !s.isNullOrEmpty()
 
                 }
             })
+        }
+    }
+
+    private fun dateCheck(
+        s: CharSequence?,
+        i: Int,
+        editTextList: Array<EditText>,
+        notEmpty: BooleanArray
+    ) {
+        if (s != null) {
+            if (s.isNotEmpty()) {
+                val regex =
+                    "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))\$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$".toRegex()
+                if (!s.toString().contains(regex)) {
+                    editTextList[i].error =
+                        "Invalid date format."
+
+                    notEmpty[i] = false
+                } else {
+                    if (s.length == 10) {
+                        val ss =
+                            s[6].toString() + s[7].toString() + s[8].toString() + s[9].toString()
+                        if (ss.toInt() > Calendar.getInstance()
+                                .get(Calendar.YEAR)
+                        ) {
+                            editTextList[i].error =
+                                "Are you from the future bud?"
+
+                            notEmpty[i] = false
+                        } else
+
+                            notEmpty[i] = true
+                    }
+
+
+                }
+
+            }
         }
     }
 
@@ -173,7 +189,19 @@ class CreateProfileFragment : Fragment()  {
     }
 
     private fun saveToSharedPref(view: View) {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+
+        val mainKey = MasterKey.Builder(requireContext())
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+            requireActivity(),
+            "sharedPrefsFile",
+            mainKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
         val editor = sharedPref.edit()
         editor.putString(
             "vaccine_name",
@@ -185,11 +213,9 @@ class CreateProfileFragment : Fragment()  {
         )
         editor.putString("personalID", personalID)
         editor.putString("gender", gender)
-        editor.putString(
-            "country",
-            view.findViewById<EditText>(R.id.editTextCountry).text.toString()
-        )
+        editor.putString("country", view.findViewById<EditText>(R.id.editTextCountry).text.toString())
         editor.apply()
+
     }
 
     private fun View.hideKeyboard() {

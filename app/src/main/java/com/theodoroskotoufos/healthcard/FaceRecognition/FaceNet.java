@@ -3,7 +3,6 @@ package com.theodoroskotoufos.healthcard.FaceRecognition;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -13,13 +12,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
 
 public class FaceNet {
     private static final String MODEL_PATH = "facenet.tflite";
-
-    private static final float IMAGE_MEAN = 127.5f;
-    private static final float IMAGE_STD = 127.5f;
 
     private static final int BATCH_SIZE = 1;
     private static final int IMAGE_HEIGHT = 160;
@@ -73,31 +68,13 @@ public class FaceNet {
     }
 
     private void addPixelValue(int pixelValue) {
-        //imgData.putFloat((((pixelValue >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
-        //imgData.putFloat((((pixelValue >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
-        //imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
         imgData.putFloat(((pixelValue >> 16) & 0xFF) / 255.0f);
         imgData.putFloat(((pixelValue >> 8) & 0xFF) / 255.0f);
         imgData.putFloat((pixelValue & 0xFF) / 255.0f);
     }
 
-    public void inspectModel() {
-        String tag = "Model Inspection";
-        Log.i(tag, "Number of input tensors: " + tflite.getInputTensorCount());
-        Log.i(tag, "Number of output tensors: " + tflite.getOutputTensorCount());
-
-        Log.i(tag, tflite.getInputTensor(0).toString());
-        Log.i(tag, "Input tensor data type: " + tflite.getInputTensor(0).dataType());
-        Log.i(tag, "Input tensor shape: " + Arrays.toString(tflite.getInputTensor(0).shape()));
-        Log.i(tag, "Output tensor 0 shape: " + Arrays.toString(tflite.getOutputTensor(0).shape()));
-    }
-
     private Bitmap resizedBitmap(Bitmap bitmap, int height, int width) {
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
-    }
-
-    private Bitmap croppedBitmap(Bitmap bitmap, int upperCornerX, int upperCornerY, int height, int width) {
-        return Bitmap.createBitmap(bitmap, upperCornerX, upperCornerY, width, height);
     }
 
     private float[][] run(Bitmap bitmap) {
@@ -130,33 +107,4 @@ public class FaceNet {
         }
         tfliteModel = null;
     }
-
-    /*public float[][] runFloat(Bitmap bitmap){
-        bitmap = resizedBitmap(bitmap, IMAGE_HEIGHT, IMAGE_WIDTH);
-        float [][][][] floatTensor = convertBitmapToFloatTensor(bitmap);
-
-        float[][] embeddings = new float[1][512];
-        tflite.run(floatTensor, embeddings);
-
-        return embeddings;
-    }
-
-    private float[][][][] convertBitmapToFloatTensor(Bitmap bitmap){
-        float[][][][] floatTensor = new float[BATCH_SIZE][IMAGE_HEIGHT][IMAGE_WIDTH][NUM_CHANNELS];
-
-        int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
-        bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        int pixel = 0;
-        for (int i = 0; i < IMAGE_HEIGHT; i++){
-            for (int j = 0; j < IMAGE_WIDTH; j++){
-                final int val = intArray[pixel++];
-                floatTensor[0][i][j][0] = (((val >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD;
-                floatTensor[0][i][j][1] = (((val >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD;
-                floatTensor[0][i][j][2] = ((val & 0xFF) - IMAGE_MEAN) / IMAGE_STD;
-            }
-        }
-
-        return floatTensor;
-    }*/
 }

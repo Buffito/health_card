@@ -11,7 +11,7 @@ import static java.lang.Math.max;
 
 public class Box {
 
-    public int[] box;       //left:box[0],top:box[1],right:box[2],bottom:box[3]
+    public int[] box;
     public float score;    //probability
     public float[] bbr;    //bounding box regression
     public boolean deleted;
@@ -101,28 +101,4 @@ public class Box {
         }
     }
 
-    public void limit_square2(int w, int h) {
-        if (width() > w) box[2] -= width() - w;
-        if (height() > h) box[3] -= height() - h;
-        if (box[0] < 0) {
-            int sz = -box[0];
-            box[0] += sz;
-            box[2] += sz;
-        }
-        if (box[1] < 0) {
-            int sz = -box[1];
-            box[1] += sz;
-            box[3] += sz;
-        }
-        if (box[2] >= w) {
-            int sz = box[2] - w + 1;
-            box[2] -= sz;
-            box[0] -= sz;
-        }
-        if (box[3] >= h) {
-            int sz = box[3] - h + 1;
-            box[3] -= sz;
-            box[1] -= sz;
-        }
-    }
 }

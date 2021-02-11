@@ -9,106 +9,106 @@
         android:id="@+id/textPersonFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="@dimen/_25sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="First Name"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textPersonLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Last Name"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Date of Birth"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Gender"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Country"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textPersonalID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Personal ID"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
     <TextView
         android:id="@+id/textCardID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:text="Card ID"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
-        android:paddingBottom="4dp"
+        android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="@dimen/_15ssp" />
 
 
 </LinearLayout>

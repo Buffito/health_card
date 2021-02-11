@@ -6,9 +6,13 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.zxing.integration.android.IntentIntegrator
+import com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment
+import com.theodoroskotoufos.healthcard.fragments.MainFragment
+import com.theodoroskotoufos.healthcard.fragments.MyProfileFragment
 import com.theodoroskotoufos.healthcard.fragments.UserProfileFragment
 
 
@@ -19,6 +23,42 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         container = findViewById(R.id.fragment_container)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (intent.hasExtra("flag")){
+            var fragment = Fragment()
+            fragment = when {
+                intent.getStringExtra("flag").equals("profile") -> {
+                    MyProfileFragment()
+                }
+                intent.getStringExtra("flag").equals("create") -> {
+                    CreateProfileFragment()
+                }
+                else -> MainFragment()
+            }
+
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+            try {
+                supportFragmentManager.popBackStackImmediate(
+                    fragment.toString(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
+            } catch (e: IllegalStateException) {
+            }
+
+            transaction.addToBackStack(fragment.toString())
+            transaction.replace(R.id.fragment_container, fragment)
+            transaction.commitAllowingStateLoss()
+            supportFragmentManager.executePendingTransactions()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

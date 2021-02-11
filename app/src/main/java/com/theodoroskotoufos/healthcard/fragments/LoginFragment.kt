@@ -16,6 +16,8 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
 import com.theodoroskotoufos.healthcard.R
@@ -37,16 +39,27 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
+
+        val mainKey = MasterKey.Builder(requireContext())
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+            requireActivity(),
+            "sharedPrefsFile",
+            mainKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
         view.findViewById<CheckBox>(R.id.checkBox).isChecked = sharedPref.getBoolean("remember", false)
 
-        initTexts(editor,view)
+        initTexts(sharedPref,view)
 
         if (view.findViewById<CheckBox>(R.id.checkBox).isChecked) {
-            login()
+          //  login()
         }
 
         view.findViewById<Button>(R.id.singInButton).setOnClickListener {
@@ -68,6 +81,7 @@ class LoginFragment : Fragment() {
         // checkBox on/off mechanic
 
         view.findViewById<CheckBox>(R.id.checkBox).setOnClickListener {
+            val editor = sharedPref.edit()
             if (view.findViewById<CheckBox>(R.id.checkBox).isChecked) {
                 editor.putBoolean("remember", true)
             } else {
@@ -83,13 +97,15 @@ class LoginFragment : Fragment() {
         )
     }
 
-    private fun initTexts(editor: SharedPreferences.Editor, view: View) {
+    private fun initTexts(sharedPref: SharedPreferences, view: View) {
         val editTextList = arrayOf(
             view.findViewById<EditText>(R.id.personalID),
             view.findViewById<EditText>(R.id.cardID)
         )
         val notEmpty = BooleanArray(2)
         // add text changed listeners to the editTexts
+
+        val editor = sharedPref.edit()
 
         for (i in 0..1) {
             editTextList[i].addTextChangedListener(object : TextWatcher {

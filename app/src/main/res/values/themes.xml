@@ -24,7 +24,7 @@
     <style name="Theme.HealthCard.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" android:fontFamily="@font/century_gothic_regular" android:textStyle="bold" />
 
     <style name="ThemeOverlay.HealthCard.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+        <item name="fullscreenBackgroundColor">@color/green</item>
+        <item name="fullscreenTextColor">@color/white</item>
     </style>
 </resources>

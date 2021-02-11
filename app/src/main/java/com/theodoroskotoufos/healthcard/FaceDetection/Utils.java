@@ -40,9 +40,9 @@ public class Utils {
 
     //在图中画点
     public static void drawPoints(Bitmap bitmap, Point[] landmark) {
-        for (int i = 0; i < landmark.length; i++) {
-            int x = landmark[i].x;
-            int y = landmark[i].y;
+        for (Point point : landmark) {
+            int x = point.x;
+            int y = point.y;
             //Log.i("Utils","[*] landmarkd "+x+ "  "+y);
             drawRect(bitmap, new Rect(x - 1, y - 1, x + 1, y + 1));
         }
@@ -52,11 +52,11 @@ public class Utils {
     //对角线翻转。data大小原先为h*w*stride，翻转后变成w*h*stride
     public static void flip_diag(float[] data, int h, int w, int stride) {
         float[] tmp = new float[w * h * stride];
-        for (int i = 0; i < w * h * stride; i++) tmp[i] = data[i];
+        if (w * h * stride >= 0) System.arraycopy(data, 0, tmp, 0, w * h * stride);
         for (int y = 0; y < h; y++)
             for (int x = 0; x < w; x++) {
-                for (int z = 0; z < stride; z++)
-                    data[(x * h + y) * stride + z] = tmp[(y * w + x) * stride + z];
+                if (stride >= 0)
+                    System.arraycopy(tmp, (y * w + x) * stride, data, (x * h + y) * stride, stride);
             }
     }
 

@@ -1,4 +1,4 @@
-package com.theodoroskotoufos.healthcard
+package com.theodoroskotoufos.healthcard.fragments
 
 import android.os.Bundle
 import android.os.Handler
@@ -8,8 +8,14 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import com.theodoroskotoufos.healthcard.R
 
-class FullscreenFragment : Fragment() {
+/**
+ * An example full-screen fragment that shows and hides the system UI (i.e.
+ * status bar and navigation/system bar) with user interaction.
+ */
+class Filler : Fragment() {
     private val hideHandler = Handler()
 
     @Suppress("InlinedApi")
@@ -29,21 +35,31 @@ class FullscreenFragment : Fragment() {
         activity?.window?.decorView?.systemUiVisibility = flags
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
     }
-    private val showPart2Runnable = Runnable {
-        // Delayed display of UI elements
-        fullscreenContentControls?.visibility = View.VISIBLE
-    }
     private var visible: Boolean = false
     private val hideRunnable = Runnable { hide() }
 
-    private var fullscreenContentControls: View? = null
+    private var fullscreenContent: View? = null
 
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_filler, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         visible = true
+
+        fullscreenContent = view.findViewById(R.id.fullscreen_content)
+        // Set up the user interaction to manually show or hide the system UI.
+        fullscreenContent?.setOnClickListener {
+            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+                R.id.action_filler_to_frontCameraFragment
+            )
+        }
 
     }
 
@@ -63,34 +79,18 @@ class FullscreenFragment : Fragment() {
 
         // Clear the systemUiVisibility flag
         activity?.window?.decorView?.systemUiVisibility = 0
-        show()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        fullscreenContentControls = null
+        fullscreenContent = null
     }
+
 
     private fun hide() {
-        // Hide UI first
-        fullscreenContentControls?.visibility = View.GONE
         visible = false
-
         // Schedule a runnable to remove the status and navigation bar after a delay
-        hideHandler.removeCallbacks(showPart2Runnable)
         hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    @Suppress("InlinedApi")
-    private fun show() {
-        // Show the system bar
-
-        visible = true
-
-        // Schedule a runnable to display UI elements after a delay
-        hideHandler.removeCallbacks(hidePart2Runnable)
-        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
-        (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 
     /**

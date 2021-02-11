@@ -75,7 +75,7 @@ public class MTCNN {
 
         for (int i = 0; i < intValues.length; i++) {
             final int val = intValues[i];
-            floatValues[i * 3 + 0] = (((val >> 16) & 0xFF) - imageMean) / imageStd;
+            floatValues[i * 3] = (((val >> 16) & 0xFF) - imageMean) / imageStd;
             floatValues[i * 3 + 1] = (((val >> 8) & 0xFF) - imageMean) / imageStd;
             floatValues[i * 3 + 2] = ((val & 0xFF) - imageMean) / imageStd;
         }
@@ -92,13 +92,12 @@ public class MTCNN {
         Matrix matrix = new Matrix();
         // RESIZE THE BIT MAP
         matrix.postScale(scale, scale);
-        Bitmap resizedBitmap = Bitmap.createBitmap(
+        return Bitmap.createBitmap(
                 bm, 0, 0, width, height, matrix, true);
-        return resizedBitmap;
     }
 
     //输入前要翻转，输出也要翻转
-    private int PNetForward(Bitmap bitmap, float[][] PNetOutProb, float[][][] PNetOutBias) {
+    private void PNetForward(Bitmap bitmap, float[][] PNetOutProb, float[][][] PNetOutBias) {
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
 
@@ -117,17 +116,7 @@ public class MTCNN {
         Utils.flip_diag(PNetOutB, PNetOutSizeW, PNetOutSizeH, 4);
         Utils.expand(PNetOutB, PNetOutBias);
         Utils.expandProb(PNetOutP, PNetOutProb);
-        /*
-        *【写法二】这个比较快，快了3ms。意义不大，用上面的方法比较直观
-        for (int y=0;y<PNetOutSizeH;y++)
-            for (int x=0;x<PNetOutSizeW;x++){
-               int idx=PNetOutSizeH*x+y;
-               PNetOutProb[y][x]=PNetOutP[idx*2+1];
-               for(int i=0;i<4;i++)
-                   PNetOutBias[y][x][i]=PNetOutB[idx*4+i];
-            }
-        */
-        return 0;
+
     }
 
     //Non-Maximum Suppression
@@ -161,7 +150,6 @@ public class MTCNN {
                                 box2.deleted = true;
                             else
                                 box.deleted = true;
-                            //delete_cnt++;
                         }
                     }
                 }
@@ -170,7 +158,7 @@ public class MTCNN {
         //Log.i(TAG,"[*]sum:"+boxes.size()+" delete:"+delete_cnt);
     }
 
-    private int generateBoxes(float[][] prob, float[][][] bias, float scale, float threshold, Vector<Box> boxes) {
+    private void generateBoxes(float[][] prob, float[][][] bias, float scale, Vector<Box> boxes) {
         int h = prob.length;
         int w = prob[0].length;
         //Log.i(TAG,"[*]height:"+prob.length+" width:"+prob[0].length);
@@ -178,7 +166,7 @@ public class MTCNN {
             for (int x = 0; x < w; x++) {
                 float score = prob[y][x];
                 //only accept prob >threadshold(0.6 here)
-                if (score > threshold) {
+                if (score > (float) 0.6) {
                     Box box = new Box();
                     //score
                     box.score = score;
@@ -188,13 +176,11 @@ public class MTCNN {
                     box.box[2] = Math.round((x * 2 + 11) / scale);
                     box.box[3] = Math.round((y * 2 + 11) / scale);
                     //bbr
-                    for (int i = 0; i < 4; i++)
-                        box.bbr[i] = bias[y][x][i];
+                    System.arraycopy(bias[y][x], 0, box.bbr, 0, 4);
                     //add
                     boxes.addElement(box);
                 }
             }
-        return 0;
     }
 
     private void BoundingBoxReggression(Vector<Box> boxes) {
@@ -228,7 +214,7 @@ public class MTCNN {
             PNetForward(bm, PNetOutProb, PNetOutBias);
             //(3)数据解析
             Vector<Box> curBoxes = new Vector<Box>();
-            generateBoxes(PNetOutProb, PNetOutBias, scale, PNetThreshold, curBoxes);
+            generateBoxes(PNetOutProb, PNetOutBias, scale, curBoxes);
             //Log.i(TAG,"[*]CNN Output Box number:"+curBoxes.size()+" Scale:"+scale);
             //(4)nms 0.5
             nms(curBoxes, 0.5f, "Union");
@@ -262,7 +248,7 @@ public class MTCNN {
         float imageStd = 128;
         for (int i = 0; i < pixels_buf.length; i++) {
             final int val = pixels_buf[i];
-            data[i * 3 + 0] = (((val >> 16) & 0xFF) - imageMean) / imageStd;
+            data[i * 3] = (((val >> 16) & 0xFF) - imageMean) / imageStd;
             data[i * 3 + 1] = (((val >> 8) & 0xFF) - imageMean) / imageStd;
             data[i * 3 + 2] = ((val & 0xFF) - imageMean) / imageStd;
         }
@@ -284,8 +270,7 @@ public class MTCNN {
         //转换
         for (int i = 0; i < num; i++) {
             boxes.get(i).score = RNetP[i * 2 + 1];
-            for (int j = 0; j < 4; j++)
-                boxes.get(i).bbr[j] = RNetB[i * 4 + j];
+            System.arraycopy(RNetB, i * 4, boxes.get(i).bbr, 0, 4);
         }
     }
 
@@ -300,7 +285,7 @@ public class MTCNN {
             crop_and_resize(bitmap, boxes.get(i), 24, curCrop);
             Utils.flip_diag(curCrop, 24, 24, 3);
             //Log.i(TAG,"[*]Pixels values:"+curCrop[0]+" "+curCrop[1]);
-            for (int j = 0; j < curCrop.length; j++) RNetIn[RNetInIdx++] = curCrop[j];
+            for (float v : curCrop) RNetIn[RNetInIdx++] = v;
         }
         //Run RNet
         RNetForward(RNetIn, boxes);
@@ -357,7 +342,7 @@ public class MTCNN {
         for (int i = 0; i < num; i++) {
             crop_and_resize(bitmap, boxes.get(i), 48, curCrop);
             Utils.flip_diag(curCrop, 48, 48, 3);
-            for (int j = 0; j < curCrop.length; j++) ONetIn[ONetInIdx++] = curCrop[j];
+            for (float v : curCrop) ONetIn[ONetInIdx++] = v;
         }
         //Run ONet
         ONetForward(ONetIn, boxes);
