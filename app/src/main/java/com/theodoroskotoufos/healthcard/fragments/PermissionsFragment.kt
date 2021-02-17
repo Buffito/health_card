@@ -14,10 +14,6 @@ private const val PERMISSIONS_REQUEST_CODE = 10
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA
     ,Manifest.permission.INTERNET)
 
-/**
- * The sole purpose of this fragment is to request permissions and, once granted, display the
- * main fragment to the user.
- */
 class PermissionsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +46,6 @@ class PermissionsFragment : Fragment() {
 
     companion object {
 
-        /** Convenience method used to check if all permissions required by this app are granted */
         fun hasPermissions(context: Context) = PERMISSIONS_REQUIRED.all {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }

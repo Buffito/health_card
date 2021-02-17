@@ -4,17 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -54,63 +54,68 @@ class LoginFragment : Fragment() {
 
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
-        view.findViewById<CheckBox>(R.id.checkBox).isChecked = sharedPref.getBoolean("remember", false)
-
-        initTexts(sharedPref,view)
-
-        if (view.findViewById<CheckBox>(R.id.checkBox).isChecked) {
-          //  login()
-        }
+        initTexts(sharedPref, view)
 
         view.findViewById<Button>(R.id.singInButton).setOnClickListener {
             it.hideKeyboard()
-            databaseChildExists(databaseRef)
-            Handler().postDelayed({
-                if (exists) {
-                    login()
-                } else {
-                    val mySnackbar =
-                        Snackbar.make(it, "PersonalId or CardId was invalid.", Snackbar.LENGTH_LONG)
-                    mySnackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity().application, R.color.green))
-                    mySnackbar.show()
-                }
-            }, 300)
-
+            if (sharedPref.getBoolean("fill", false))
+                login()
+            else
+                credentialCheck(databaseRef, it)
         }
 
-        // checkBox on/off mechanic
 
-        view.findViewById<CheckBox>(R.id.checkBox).setOnClickListener {
-            val editor = sharedPref.edit()
-            if (view.findViewById<CheckBox>(R.id.checkBox).isChecked) {
-                editor.putBoolean("remember", true)
-            } else {
-                editor.putBoolean("remember", false)
-            }
-            editor.apply()
-        }
     }
 
-    private fun login(){
+    private fun credentialCheck(databaseRef: DatabaseReference, view: View) {
+        databaseChildExists(databaseRef)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (exists) {
+                login()
+            } else {
+                val mySnackbar =
+                    Snackbar.make(view, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
+                mySnackbar.view.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireActivity().application,
+                        R.color.green
+                    )
+                )
+                mySnackbar.show()
+            }
+        }, 200)
+
+    }
+
+    private fun login() {
         Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
             R.id.action_loginFragment_to_myProfileFragment
         )
     }
 
     private fun initTexts(sharedPref: SharedPreferences, view: View) {
-        val editTextList = arrayOf(
-            view.findViewById<EditText>(R.id.personalID),
-            view.findViewById<EditText>(R.id.cardID)
+        val editTextArray: Array<EditText> = arrayOf(
+            view.findViewById(R.id.personalID),
+            view.findViewById(R.id.cardID)
         )
         val notEmpty = BooleanArray(2)
         // add text changed listeners to the editTexts
 
         val editor = sharedPref.edit()
 
+        if (sharedPref.getBoolean("fill", false)) {
+            view.findViewById<EditText>(R.id.personalID)
+                .setText(sharedPref.getString("personalID", ""))
+            view.findViewById<EditText>(R.id.cardID).setText(sharedPref.getString("cardID", ""))
+            notEmpty[0] = true
+            notEmpty[1] = true
+        }
+
         for (i in 0..1) {
-            editTextList[i].addTextChangedListener(object : TextWatcher {
+            editTextArray[i].addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    view.findViewById<Button>(R.id.singInButton).isEnabled = emptyArrayCheck(notEmpty)
+                    view.findViewById<Button>(R.id.singInButton).isEnabled =
+                        emptyArrayCheck(notEmpty)
                     personalID = view.findViewById<EditText>(R.id.personalID).text.toString().trim()
                     cardID = view.findViewById<EditText>(R.id.cardID).text.toString().trim()
                     editor.putString("personalID", personalID)
@@ -145,7 +150,7 @@ class LoginFragment : Fragment() {
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.hasChild(personalID) &&
-                    snapshot.child(personalID).child("card id").value.toString().equals(cardID)
+                    snapshot.child(personalID).child("card id").value.toString() == cardID
                 ) {
                     exists = true
                 }

@@ -1,6 +1,5 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -73,9 +72,9 @@ class UserProfileFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Something went wrong :(", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT)
                     .show()
-                fragmentManager?.popBackStackImmediate()
+                parentFragmentManager.popBackStackImmediate()
             }
         })
     }

@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.security.crypto.MasterKeys
 import com.google.firebase.database.FirebaseDatabase
 import com.theodoroskotoufos.healthcard.R
 import kotlinx.android.synthetic.main.fragment_create_profile.*
@@ -36,7 +35,7 @@ class CreateProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbar.title = "Create Profile"
+        toolbar.title = getString(R.string.create_profile)
 
         initTexts(view)
         initSpinner(view)
@@ -59,26 +58,26 @@ class CreateProfileFragment : Fragment() {
 
 
     private fun initTexts(view: View) {
-        val editTextList = arrayOf(
-            view.findViewById<EditText>(R.id.editTextPersonFirstName),
-            view.findViewById<EditText>(R.id.editTextPersonLastName),
-            view.findViewById<EditText>(R.id.editTextDate),
-            view.findViewById<EditText>(R.id.editTextCountry),
-            view.findViewById<EditText>(R.id.editTextPersonalID),
-            view.findViewById<EditText>(R.id.editTextCardID),
-            view.findViewById<EditText>(R.id.editTextVaccineName),
-            view.findViewById<EditText>(R.id.editTextDateVaccine)
+        val editTextArray: Array<EditText> = arrayOf(
+            view.findViewById(R.id.editTextPersonFirstName),
+            view.findViewById(R.id.editTextPersonLastName),
+            view.findViewById(R.id.editTextDate),
+            view.findViewById(R.id.editTextCountry),
+            view.findViewById(R.id.editTextPersonalID),
+            view.findViewById(R.id.editTextCardID),
+            view.findViewById(R.id.editTextVaccineName),
+            view.findViewById(R.id.editTextDateVaccine)
         )
 
         val notEmpty = BooleanArray(8)
 
         for (i in 0..7) {
-            editTextList[i].addTextChangedListener(object : TextWatcher {
+            editTextArray[i].addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     if (emptyArrayCheck(notEmpty)) {
                         view.findViewById<Button>(R.id.nextButton).isEnabled =
                             emptyArrayCheck(notEmpty)
-                        editTextList[i].hideKeyboard()
+                        editTextArray[i].hideKeyboard()
                         view.findViewById<Button>(R.id.nextButton).requestFocus()
                     }
 
@@ -94,7 +93,7 @@ class CreateProfileFragment : Fragment() {
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (i == 2 || i == 7) {
-                        dateCheck(s, i, editTextList, notEmpty)
+                        dateCheck(s, i, editTextArray, notEmpty)
                         return
                     }
 
@@ -108,16 +107,16 @@ class CreateProfileFragment : Fragment() {
     private fun dateCheck(
         s: CharSequence?,
         i: Int,
-        editTextList: Array<EditText>,
+        editTextArray: Array<EditText>,
         notEmpty: BooleanArray
     ) {
         if (s != null) {
             if (s.isNotEmpty()) {
                 val regex =
-                    "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))\$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$".toRegex()
+                    "^(?:(?:31([/\\-.])(?:0?[13578]|1[02]))\\1|(?:(?:29|30)([/\\-.])(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$|^(?:29([/\\-.])0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))\$|^(?:0?[1-9]|1\\d|2[0-8])([/\\-.])(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$".toRegex()
                 if (!s.toString().contains(regex)) {
-                    editTextList[i].error =
-                        "Invalid date format."
+                    editTextArray[i].error =
+                        getString(R.string.invalid_date)
 
                     notEmpty[i] = false
                 } else {
@@ -127,8 +126,8 @@ class CreateProfileFragment : Fragment() {
                         if (ss.toInt() > Calendar.getInstance()
                                 .get(Calendar.YEAR)
                         ) {
-                            editTextList[i].error =
-                                "Are you from the future bud?"
+                            editTextArray[i].error =
+                                getString(R.string.future)
 
                             notEmpty[i] = false
                         } else
@@ -145,14 +144,14 @@ class CreateProfileFragment : Fragment() {
 
     private fun initSpinner(view: View) {
         val spinner: Spinner = view.findViewById(R.id.spinner)
-        val genderArray = arrayOf<String?>("Male", "Female")
+        val genderArray = arrayOf<String?>(getString(R.string.male), getString(R.string.female))
         val arrayAdapter: ArrayAdapter<Any?> =
             ArrayAdapter<Any?>(requireActivity(), R.layout.spinner_list, genderArray)
         arrayAdapter.setDropDownViewResource(R.layout.spinner_list)
         spinner.adapter = arrayAdapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                gender = "Male"
+                gender = getString(R.string.male)
             }
 
             override fun onItemSelected(
@@ -212,8 +211,12 @@ class CreateProfileFragment : Fragment() {
             view.findViewById<EditText>(R.id.editTextDateVaccine).text.toString()
         )
         editor.putString("personalID", personalID)
+        editor.putString("cardID", view.findViewById<EditText>(R.id.editTextCardID).text.toString())
         editor.putString("gender", gender)
-        editor.putString("country", view.findViewById<EditText>(R.id.editTextCountry).text.toString())
+        editor.putString(
+            "country",
+            view.findViewById<EditText>(R.id.editTextCountry).text.toString()
+        )
         editor.apply()
 
     }

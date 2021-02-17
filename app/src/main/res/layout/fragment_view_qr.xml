@@ -30,7 +30,7 @@
         android:fontFamily="@font/century_gothic_regular"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="Scan to get user information."
+        android:text="@string/qr_hint"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"

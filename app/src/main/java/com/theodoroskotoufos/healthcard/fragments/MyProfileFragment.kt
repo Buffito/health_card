@@ -1,11 +1,11 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,9 +52,9 @@ class MyProfileFragment : Fragment() {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
-        val personalID = sharedPref.getString("personalID", "").toString().trim()
+        val personalID = sharedPref.getString("personalID", "").toString()
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             initButtons(view)
             initName(view, personalID)
             initPhoto(view, personalID)
@@ -80,6 +80,12 @@ class MyProfileFragment : Fragment() {
         view.findViewById<Button>(R.id.scanQrButton).setOnClickListener {
             /// send to qr scanner
             scanQRCode()
+        }
+
+        view.findViewById<Button>(R.id.settingsButton).setOnClickListener {
+            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+                R.id.action_myProfileFragment_to_settingsFragment
+            )
         }
     }
 
@@ -130,8 +136,11 @@ class MyProfileFragment : Fragment() {
         val integrator = IntentIntegrator(requireActivity()).apply {
             captureActivity = CaptureActivity::class.java
             setOrientationLocked(false)
+            setBeepEnabled(true)
+            setCameraId(0)
+            setBarcodeImageEnabled(true)
             setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
-            setPrompt("Please wait")
+            setPrompt(getString(R.string.scan_prompt))
         }
         integrator.initiateScan()
     }

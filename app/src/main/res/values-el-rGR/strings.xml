@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Κάρτα Υγείας</string>
+    <string name="create_fname_hint">Όνομα</string>
+    <string name="create_lname_hint">Επώνυμο</string>
+    <string name="create_date_hint">Ημερομηνία γέννησης</string>
+    <string name="create_country_hint">Χώρα</string>
+    <string name="create_profile">Δημιουργία προφίλ</string>
+    <string name="create">Δημιουργία</string>
+    <string name="log_in">Είσοδος</string>
+    <string name="invalid_date">Λανθασμένη μορφή ημερομηνίας.</string>
+    <string name="future">Είσαι από το μέλλον φίλε μου?</string>
+    <string name="error">Κάτι πήγε στραβά :(</string>
+    <string name="qr_hint">Σκάναρε για να λάβεις πληροφορίες για τον χρήστη.</string>
+    <string name="male">Άντρας</string>
+    <string name="female">Γυναίκα</string>
+    <string name="profile_info">Πληροφορίες προφίλ</string>
+    <string name="create_next_button_hint">Επόμενο</string>
+    <string name="create_vname_hint">Όνομα εμβολίου</string>
+    <string name="create_vdate_hint">Ημερομηνία εμβολιασμού</string>
+    <string name="create_pid_hint">Προσωπικό ID</string>
+    <string name="create_cid_hint">ID κάρτας</string>
+    <string name="view_qr">Προβολή qr</string>
+    <string name="scan_qr">Σκανάρισμα qr</string>
+    <string name="settings">Ρυθμίσεις</string>
+    <string name="login_fail">Το προσωπικό ID ή το ID κάρτας ήταν λανθασμένο.</string>
+    <string name="scan_prompt">Κρατήστε τον κωδικό όσο πιο κοντά στη γραμμή γίνεται.</string>
+    <string name="auto_login1">Αυτόματη είσοδος</string>
+    <string name="auto_login2">Συνδέει τον χρήστη αυτόματα, χωρίς συμπλήρωση στοιχείων.</string>
+    <string name="language">Γλώσσα</string>
+    <string name="language_sum">Επιλογή γλώσσας.</string>
+    <string name="auto_fill1">Αυτόματη συμπλήρωση στοιχείων</string>
+    <string name="auto_fill2">Συμπλήρωση στοιχείων του χρήστη αυτόματα.</string>
+
+    <string-array name="lang_array">
+        <item>Αγγλικά</item>
+        <item>Ελληνικά</item>
+    </string-array>
+</resources>

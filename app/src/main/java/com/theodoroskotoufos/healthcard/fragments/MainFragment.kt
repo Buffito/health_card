@@ -59,8 +59,11 @@ class MainFragment : Fragment() {
         val integrator = IntentIntegrator(requireActivity()).apply {
             captureActivity = CaptureActivity::class.java
             setOrientationLocked(false)
+            setBeepEnabled(true)
+            setCameraId(0)
+            setBarcodeImageEnabled(true)
             setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
-            setPrompt("Please wait")
+            setPrompt(getString(R.string.scan_prompt))
         }
         integrator.initiateScan()
     }

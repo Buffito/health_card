@@ -14,9 +14,8 @@
         android:layout_marginTop="@dimen/_150sdp"
         android:ems="10"
         android:gravity="center_horizontal"
-        android:hint="Name"
+        android:hint="@string/create_fname_hint"
         android:textAlignment="center"
-        android:textSize="20sp"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
         android:paddingBottom="@dimen/_4sdp"
@@ -27,17 +26,18 @@
 
     <Button
         android:id="@+id/infoButton"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_width="@dimen/_110sdp"
+        android:layout_height="@dimen/_110sdp"
         android:layout_marginStart="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        android:text="profile info"
+        android:text="@string/profile_info"
         android:foreground="@drawable/profile_information"
         android:foregroundGravity="center_vertical|center_horizontal|fill"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
         android:gravity="bottom|center"
         android:paddingBottom="@dimen/_4sdp"
+        android:textSize="@dimen/_10ssp"
         android:textStyle="bold"
         app:backgroundTint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,17 +45,18 @@
 
     <Button
         android:id="@+id/viewQrButton"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
-        android:layout_marginStart="@dimen/_40sdp"
+        android:layout_width="@dimen/_110sdp"
+        android:layout_height="@dimen/_110sdp"
+        android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        android:text="view qr"
+        android:text="@string/view_qr"
         android:foreground="@drawable/qr_code"
         android:foregroundGravity="center_vertical|center_horizontal|fill"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
         android:gravity="bottom|center"
         android:paddingBottom="@dimen/_4sdp"
+        android:textSize="@dimen/_10ssp"
         android:textStyle="bold"
         app:backgroundTint="#FFFFFF"
         app:layout_constraintStart_toEndOf="@+id/infoButton"
@@ -63,12 +64,33 @@
 
     <Button
         android:id="@+id/scanQrButton"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_width="@dimen/_110sdp"
+        android:layout_height="@dimen/_110sdp"
         android:layout_marginStart="@dimen/_40sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:text="scan qr"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/scan_qr"
         android:foreground="@drawable/scan_qr"
+        android:foregroundGravity="center_vertical|center_horizontal|fill"
+        android:textColor="@color/black"
+        android:fontFamily="@font/century_gothic_regular"
+        android:gravity="bottom|center"
+        android:paddingBottom="@dimen/_4sdp"
+        android:textSize="@dimen/_10ssp"
+        android:textStyle="bold"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoButton" />
+
+
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="@dimen/_110sdp"
+        android:layout_height="@dimen/_110sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/settings"
+        android:foreground="@drawable/settings"
         android:foregroundGravity="center_vertical|center_horizontal|fill"
         android:textColor="@color/black"
         android:fontFamily="@font/century_gothic_regular"
@@ -76,7 +98,7 @@
         android:paddingBottom="@dimen/_4sdp"
         android:textStyle="bold"
         app:backgroundTint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoButton" />
+        app:layout_constraintStart_toEndOf="@+id/scanQrButton"
+        app:layout_constraintTop_toBottomOf="@+id/viewQrButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

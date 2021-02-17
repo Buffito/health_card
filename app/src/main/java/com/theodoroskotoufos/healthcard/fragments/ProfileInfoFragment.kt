@@ -1,22 +1,20 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.theodoroskotoufos.healthcard.R
 import de.hdodenhof.circleimageview.CircleImageView
@@ -50,40 +48,48 @@ class ProfileInfoFragment : Fragment() {
         val personalID = sharedPref.getString("personalID", "").toString()
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(personalID)
 
-        Handler().postDelayed({
 
+        Handler(Looper.getMainLooper()).postDelayed({
             initPhoto(view, personalID)
-
-            databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    view.findViewById<TextView>(R.id.textViewPersonFirstName).text =
-                        snapshot.child("first name").value.toString()
-                    view.findViewById<TextView>(R.id.textViewPersonLastName).text =
-                        snapshot.child("last name").value.toString()
-                    view.findViewById<TextView>(R.id.textViewDate).text =
-                        snapshot.child("gender").value.toString()
-                    view.findViewById<TextView>(R.id.textViewGender).text =
-                        snapshot.child("date of birth").value.toString()
-                    view.findViewById<TextView>(R.id.textViewCountry).text =
-                        snapshot.child("country").value.toString()
-                    view.findViewById<TextView>(R.id.textViewPersonalID).text =
-                        snapshot.child("personal id").value.toString()
-                    view.findViewById<TextView>(R.id.textViewCardID).text =
-                        snapshot.child("card id").value.toString()
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-
-            view.findViewById<TextView>(R.id.textViewVaccineName).text =
-                sharedPref.getString("vaccine_name", "")
-            view.findViewById<TextView>(R.id.textViewDateVaccine).text =
-                sharedPref.getString("vaccine_date", "")
+            initViews(databaseRef, sharedPref, view)
         }, 300)
 
+    }
+
+    private fun initViews(
+        databaseRef: DatabaseReference,
+        sharedPref: SharedPreferences,
+        view: View
+    ) {
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                view.findViewById<TextView>(R.id.textViewPersonFirstName).text =
+                    snapshot.child("first name").value.toString()
+                view.findViewById<TextView>(R.id.textViewPersonLastName).text =
+                    snapshot.child("last name").value.toString()
+                view.findViewById<TextView>(R.id.textViewDate).text =
+                    snapshot.child("gender").value.toString()
+                view.findViewById<TextView>(R.id.textViewGender).text =
+                    snapshot.child("date of birth").value.toString()
+                view.findViewById<TextView>(R.id.textViewCountry).text =
+                    snapshot.child("country").value.toString()
+                view.findViewById<TextView>(R.id.textViewPersonalID).text =
+                    snapshot.child("personal id").value.toString()
+                view.findViewById<TextView>(R.id.textViewCardID).text =
+                    snapshot.child("card id").value.toString()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+        view.findViewById<TextView>(R.id.textViewVaccineName).text =
+            sharedPref.getString("vaccine_name", "")
+        view.findViewById<TextView>(R.id.textViewDateVaccine).text =
+            sharedPref.getString("vaccine_date", "")
     }
 
     private fun initPhoto(view: View, child: String) {

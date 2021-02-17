@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Vector;
 
 public class FaceRecognitionFragment extends Fragment {
@@ -82,12 +83,12 @@ public class FaceRecognitionFragment extends Fragment {
         };
 
         try {
-            MasterKey mainKey = new MasterKey.Builder(getActivity())
+            MasterKey mainKey = new MasterKey.Builder(requireActivity())
                     .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                     .build();
 
             SharedPreferences sharedPref = EncryptedSharedPreferences.create(
-                    getActivity(),
+                    requireActivity(),
                     "sharedPrefsFile",
                     mainKey,
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -144,7 +145,7 @@ public class FaceRecognitionFragment extends Fragment {
     }
 
     private void faceRecognition() {
-        MTCNN mtcnn = new MTCNN(getActivity().getAssets());
+        MTCNN mtcnn = new MTCNN(requireActivity().getAssets());
 
         Bitmap face1 = cropFace(selfieBitmap, mtcnn);
         Bitmap face2 = cropFace(cardBitmap, mtcnn);
@@ -153,7 +154,7 @@ public class FaceRecognitionFragment extends Fragment {
 
         FaceNet facenet = null;
         try {
-            facenet = new FaceNet(getActivity().getAssets());
+            facenet = new FaceNet(requireActivity().getAssets());
         } catch (IOException e) {
             e.printStackTrace();
         }

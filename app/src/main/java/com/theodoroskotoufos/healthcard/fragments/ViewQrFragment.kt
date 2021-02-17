@@ -47,7 +47,7 @@ class ViewQrFragment : Fragment() {
                 }
             }
         } catch (e: WriterException) {
-            Log.d("ViewQrFragemnt", "generateQRCode: ${e.message}")
+            Log.d("ViewQrFragment", "generateQRCode: ${e.message}")
         }
         return bitmap
     }
