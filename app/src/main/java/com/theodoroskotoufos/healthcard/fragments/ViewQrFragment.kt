@@ -1,6 +1,7 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -10,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
@@ -28,7 +31,18 @@ class ViewQrFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val mainKey = MasterKey.Builder(requireContext())
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+            requireActivity(),
+            "sharedPrefsFile",
+            mainKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
         val personalID = sharedPref.getString("personalID","").toString()
         val bitmap = generateQRCode(personalID)
         view.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)

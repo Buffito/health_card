@@ -7,7 +7,7 @@
     <string name="create_country_hint">Country</string>
     <string name="create_profile">Create Profile</string>
     <string name="create">create</string>
-    <string name="log_in">log in</string>
+    <string name="log_in">Log in</string>
     <string name="invalid_date">Invalid date format.</string>
     <string name="future">Are you from the future bud?</string>
     <string name="error">Something went wrong :(</string>
@@ -36,4 +36,8 @@
         <item>English</item>
         <item>Greek</item>
     </string-array>
+    <string name="selfie_hint">Please take a photo of your face....</string>
+    <string name="continue_hint">(Tap anywhere to continue...)</string>
+    <string name="card_hint">...and a close up of your card photo</string>
+    <string name="please_wait">Please Wait</string>
 </resources>

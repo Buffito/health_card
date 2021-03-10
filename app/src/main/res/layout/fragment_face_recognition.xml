@@ -21,12 +21,12 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="116dp"
-        android:text="Please Wait"
-        android:textSize="25sp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="72dp"
         android:fontFamily="@font/century_gothic_regular"
         android:gravity="bottom|center"
+        android:text="@string/please_wait"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

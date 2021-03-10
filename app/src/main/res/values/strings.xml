@@ -22,7 +22,7 @@
     <string name="scan_prompt">Keep code as close to the line as possible.</string>
     <string name="error">Something went wrong :(</string>
     <string name="qr_hint">Scan to get user information.</string>
-    <string name="log_in">log in</string>
+    <string name="log_in">Log in</string>
     <string name="auto_fill1">Auto fill credentials</string>
     <string name="auto_fill2">Auto fills the credentials for the user.</string>
     <string name="auto_login1">Auto Login</string>
@@ -30,6 +30,10 @@
     <string name="language">Language</string>
     <string name="language_sum">Select your display language.</string>
     <string name="create">create</string>
+    <string name="selfie_hint">Please take a photo of your face....</string>
+    <string name="continue_hint">(Tap anywhere to continue...)</string>
+    <string name="card_hint">...and a close up of your card photo</string>
+    <string name="please_wait">Please Wait</string>
 
 
     <string-array name="lang_array">

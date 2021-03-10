@@ -36,4 +36,8 @@
         <item>Αγγλικά</item>
         <item>Ελληνικά</item>
     </string-array>
+    <string name="please_wait">Παρακαλώ περιμένετε</string>
+    <string name="selfie_hint">Τραβήξτε μία φωτογραφία του προσώπου σας....</string>
+    <string name="continue_hint">(Πατήστε οπουδήποτε για να συνεχίσετε ...)</string>
+    <string name="card_hint">... και μια κοντινή φωτογραφία της κάρτας σας</string>
 </resources>

@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="Please grab a photo of your face...."
+        android:text="@string/selfie_hint"
         android:textColor="?attr/fullscreenTextColor"
         android:textSize="50sp"
         android:textStyle="bold" />
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:text="(Tap anywhere to continue...)"
+        android:text="@string/continue_hint"
         android:textColor="@color/white"
         android:textSize="@dimen/_15ssp" />
 
