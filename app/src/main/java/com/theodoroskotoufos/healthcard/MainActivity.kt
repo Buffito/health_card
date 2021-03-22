@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -82,7 +83,17 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
                 val userlID = result.contents.trim()
-                val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+                val mainKey = MasterKey.Builder(applicationContext)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build()
+
+                val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+                    application,
+                    "sharedPrefsFile",
+                    mainKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
                 val editor = sharedPref.edit()
                 editor.putString("userID", userlID)
                 editor.apply()

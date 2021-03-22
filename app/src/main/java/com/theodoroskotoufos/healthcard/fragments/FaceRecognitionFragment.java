@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.theodoroskotoufos.healthcard.FaceDetection.Box;
@@ -32,11 +37,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Vector;
 
+import static android.content.ContentValues.TAG;
+
 public class FaceRecognitionFragment extends Fragment {
 
     private Bitmap selfieBitmap, cardBitmap;
     private String gender = "";
     private String country = "";
+    private String personalID = "";
+    private StorageReference imagesRef,selfieRef,cardRef;
     private ArrayList<String> countries;
 
     public FaceRecognitionFragment() {
@@ -103,13 +112,13 @@ public class FaceRecognitionFragment extends Fragment {
     }
 
     private void getPicturesToBitmap(SharedPreferences sharedPref) {
-        String personalID = sharedPref.getString("personalID", "").trim();
+        personalID = sharedPref.getString("personalID", "").trim();
         gender = sharedPref.getString("gender", "").trim();
         country = sharedPref.getString("country", "").trim();
 
-        StorageReference imagesRef = FirebaseStorage.getInstance().getReference().child("images").child(personalID);
-        StorageReference selfieRef = imagesRef.child("selfie");
-        StorageReference cardRef = imagesRef.child("card photo");
+        imagesRef = FirebaseStorage.getInstance().getReference().child("images").child(personalID);
+        selfieRef = imagesRef.child("selfie");
+        cardRef = imagesRef.child("card photo");
 
         File selfieFile = null;
         try {
@@ -189,8 +198,30 @@ public class FaceRecognitionFragment extends Fragment {
             }
 
         } else {
-            intent.putExtra("flag", "create");
             Toast.makeText(getContext(), "Error occurred while creating profile.", Toast.LENGTH_LONG).show();
+            selfieRef.delete().addOnSuccessListener(aVoid -> {
+                // File deleted successfully
+                Log.d(TAG, "onSuccess: deleted selfie file");
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
+                    Log.d(TAG, "onFailure: did not delete selfie file");
+                }
+            });
+            cardRef.delete().addOnSuccessListener(aVoid -> {
+                // File deleted successfully
+                Log.d(TAG, "onSuccess: deleted card file");
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
+                    Log.d(TAG, "onFailure: did not delete card file");
+                }
+            });
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users").child(personalID);
+            reference.removeValue();
+            intent.putExtra("flag", "create");
         }
         startActivity(intent);
 

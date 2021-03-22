@@ -54,6 +54,9 @@ class LoginFragment : Fragment() {
 
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
 
+        if (sharedPref.getBoolean("remember", false))
+            login()
+
         initTexts(sharedPref, view)
 
         view.findViewById<Button>(R.id.singInButton).setOnClickListener {
@@ -109,6 +112,8 @@ class LoginFragment : Fragment() {
             view.findViewById<EditText>(R.id.cardID).setText(sharedPref.getString("cardID", ""))
             notEmpty[0] = true
             notEmpty[1] = true
+            view.findViewById<Button>(R.id.singInButton).isEnabled =
+                emptyArrayCheck(notEmpty)
         }
 
         for (i in 0..1) {
