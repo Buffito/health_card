@@ -1,18 +1,28 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -21,11 +31,14 @@ import androidx.security.crypto.MasterKey
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
 import com.theodoroskotoufos.healthcard.R
+import java.util.concurrent.Executor
 
 class LoginFragment : Fragment() {
     private var exists: Boolean = false
     private var personalID: String = ""
     private var cardID: String = ""
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +47,6 @@ class LoginFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,36 +76,44 @@ class LoginFragment : Fragment() {
             if (sharedPref.getBoolean("fill", false))
                 login()
             else
-                credentialCheck(databaseRef, it)
+                credentialCheck(sharedPref, databaseRef, it)
         }
-
 
     }
 
-    private fun credentialCheck(databaseRef: DatabaseReference, view: View) {
+    private fun credentialCheck(sharedPref: SharedPreferences, databaseRef: DatabaseReference, view: View) {
         databaseChildExists(databaseRef)
         Handler(Looper.getMainLooper()).postDelayed({
-            if (exists) {
+
+            if (exists || checkSharedPreferences(sharedPref)) {
                 login()
             } else {
-                val mySnackbar =
-                    Snackbar.make(view, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
-                mySnackbar.view.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireActivity().application,
-                        R.color.green
-                    )
-                )
-                mySnackbar.show()
+                showSnackbar(view)
             }
         }, 200)
 
+    }
+
+    private fun showSnackbar(view: View){
+        val mySnackbar =
+            Snackbar.make(view, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
+        mySnackbar.view.setBackgroundColor(
+            ContextCompat.getColor(
+                requireActivity().application,
+                R.color.green
+            )
+        )
+        mySnackbar.show()
     }
 
     private fun login() {
         Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
             R.id.action_loginFragment_to_myProfileFragment
         )
+    }
+
+    private fun checkSharedPreferences(sharedPref: SharedPreferences): Boolean {
+        return sharedPref.contains(personalID) && sharedPref.contains(cardID)
     }
 
     private fun initTexts(sharedPref: SharedPreferences, view: View) {
@@ -168,5 +188,6 @@ class LoginFragment : Fragment() {
             }
         })
     }
+
 
 }

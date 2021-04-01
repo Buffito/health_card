@@ -73,27 +73,6 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="backCameraFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-100" />
-                            <option name="y" value="30" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_backCameraFragment_to_faceRecognitionFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="createProfileFragment">
                     <value>
                       <LayoutPositions>
@@ -102,104 +81,6 @@
                             <option name="x" value="-93" />
                             <option name="y" value="-740" />
                           </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_createProfileFragment_to_filler">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="faceRecognitionFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="171" />
-                            <option name="y" value="91" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_faceRecognitionFragment_to_createProfileFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_faceRecognitionFragment_to_myProfileFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="filler">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-407" />
-                            <option name="y" value="-435" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_filler_to_frontCameraFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="filler2">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-383" />
-                            <option name="y" value="24" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_filler2_to_backCameraFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="frontCameraFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-133" />
-                            <option name="y" value="-376" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_frontCameraFragment_to_filler2">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -277,6 +158,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_myProfileFragment_to_settingsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_myProfileFragment_to_userProfileFragment">
                               <value>
                                 <LayoutPositions />
@@ -325,6 +211,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="scrollingFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-696" />
+                            <option name="y" value="-1199" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="settingsFragment">
                     <value>
                       <LayoutPositions>
@@ -368,8 +266,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="871" />
-                            <option name="y" value="-395" />
+                            <option name="x" value="970" />
+                            <option name="y" value="-548" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -385,7 +283,7 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="back_camera_fragment">
+                  <entry key="FirstFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -394,10 +292,19 @@
                             <option name="y" value="12" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_FirstFragment_to_SecondFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="front_camera_fragment">
+                  <entry key="SecondFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -408,7 +315,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_camera_to_gallery">
+                            <entry key="action_SecondFragment_to_FirstFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

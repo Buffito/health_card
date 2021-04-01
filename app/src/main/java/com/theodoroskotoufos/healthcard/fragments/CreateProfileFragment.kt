@@ -1,6 +1,7 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -11,13 +12,20 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.google.firebase.database.FirebaseDatabase
 import com.theodoroskotoufos.healthcard.R
+import com.theodoroskotoufos.healthcard.User
+import com.theodoroskotoufos.healthcard.facetec.facetecapp.FacetecAppActivity
 import kotlinx.android.synthetic.main.fragment_create_profile.*
+import org.json.JSONObject
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.Writer
 import java.util.*
+
 
 class CreateProfileFragment : Fragment() {
     private var gender: String = ""
@@ -27,7 +35,6 @@ class CreateProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_create_profile, container, false)
     }
@@ -44,13 +51,13 @@ class CreateProfileFragment : Fragment() {
             /// save to firebase/shared preferences and open user profile
             saveToFirebase(view)
             saveToSharedPref(view)
+            toJson(view)
 
-
-            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                R.id.action_createProfileFragment_to_filler
-            )
+            val intent = Intent(requireContext(), FacetecAppActivity::class.java)
+            startActivity(intent)
         }
     }
+
 
     private fun emptyArrayCheck(array: BooleanArray): Boolean {
         return array[0] && array[1] && array[2] && array[3] && array[4] && array[5] && array[6] && array[7]
@@ -220,6 +227,51 @@ class CreateProfileFragment : Fragment() {
         editor.apply()
 
     }
+
+    private fun toJson(view: View){
+        val json = JSONObject()
+
+        val user = User(
+            view.findViewById<EditText>(R.id.editTextPersonFirstName).text.toString(),
+            view.findViewById<EditText>(R.id.editTextPersonLastName).text.toString(),
+            gender,
+            view.findViewById<EditText>(R.id.editTextDate).text.toString(),
+            view.findViewById<EditText>(R.id.editTextCountry).text.toString(),
+            view.findViewById<EditText>(R.id.editTextPersonalID).text.toString(),
+            view.findViewById<EditText>(R.id.editTextCardID).text.toString(),
+            view.findViewById<EditText>(R.id.editTextVaccineName).text.toString(),
+            view.findViewById<EditText>(R.id.editTextDateVaccine).text.toString()
+        )
+
+        json.put("user", addUser(user))
+        saveJson(json.toString())
+
+    }
+
+    private fun addUser(user: User): JSONObject {
+        return JSONObject()
+            .put("fname",user.fname)
+            .put("lname",user.lname)
+            .put("gender",user.gender)
+            .put("dob",user.dob)
+            .put("country",user.country)
+            .put("pid",user.pid)
+            .put("cid",user.cid)
+            .put("vname",user.vname)
+            .put("dov",user.dov)
+
+    }
+
+    private fun saveJson(jsonString: String){
+        val output: Writer
+        val filename = context?.filesDir!!.absolutePath + "/user.json"
+        val file = File(filename)
+        file.createNewFile()
+        output = BufferedWriter(FileWriter(file))
+        output.write(jsonString)
+        output.close()
+    }
+
 
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

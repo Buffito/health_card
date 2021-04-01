@@ -13,6 +13,11 @@
             app:title="@string/auto_login1"
             android:summary="@string/auto_login2"/>
 
+        <SwitchPreferenceCompat
+            app:key="bio"
+            app:title="@string/bio_login1"
+            android:summary="@string/bio_login2"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/language">

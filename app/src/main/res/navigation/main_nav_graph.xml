@@ -49,63 +49,10 @@
 
 
     <fragment
-        android:id="@+id/filler"
-        android:name="com.theodoroskotoufos.healthcard.fragments.Filler"
-        android:label="fragment_filler"
-        tools:layout="@layout/fragment_filler">
-        <action
-            android:id="@+id/action_filler_to_frontCameraFragment"
-            app:destination="@id/frontCameraFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/createProfileFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment"
         android:label="CreateProfileFragment"
-        tools:layout="@layout/fragment_create_profile">
-        <action
-            android:id="@+id/action_createProfileFragment_to_filler"
-            app:destination="@id/filler" />
-    </fragment>
-    <fragment
-        android:id="@+id/frontCameraFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.FrontCameraFragment"
-        android:label="FrontCameraFragment"
-        tools:layout="@layout/fragment_front_camera">
-        <action
-            android:id="@+id/action_frontCameraFragment_to_filler2"
-            app:destination="@id/filler2" />
-    </fragment>
-    <fragment
-        android:id="@+id/filler2"
-        android:name="com.theodoroskotoufos.healthcard.fragments.Filler2"
-        android:label="fragment_filler2"
-        tools:layout="@layout/fragment_filler2">
-        <action
-            android:id="@+id/action_filler2_to_backCameraFragment"
-            app:destination="@id/backCameraFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/backCameraFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.BackCameraFragment"
-        android:label="BackCameraFragment"
-        tools:layout="@layout/fragment_back_camera">
-
-        <action
-            android:id="@+id/action_backCameraFragment_to_faceRecognitionFragment"
-            app:destination="@id/faceRecognitionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/faceRecognitionFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.FaceRecognitionFragment"
-        android:label="fragment_face_recognition"
-        tools:layout="@layout/fragment_face_recognition">
-        <action
-            android:id="@+id/action_faceRecognitionFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
-        <action
-            android:id="@+id/action_faceRecognitionFragment_to_createProfileFragment"
-            app:destination="@id/createProfileFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_create_profile"/>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.LoginFragment"
@@ -147,6 +94,5 @@
         android:id="@+id/settingsFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.SettingsFragment"
         android:label="SettingsFragment" />
-
 
 </navigation>

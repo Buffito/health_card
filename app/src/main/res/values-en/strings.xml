@@ -31,13 +31,20 @@
     <string name="language_sum">Select your display language.</string>
     <string name="auto_fill1">Auto fill credentials</string>
     <string name="auto_fill2">Auto fills the credentials for the user.</string>
+    <string name="selfie_hint">Please take a photo of your face....</string>
+    <string name="continue_hint">(Tap anywhere to continue...)</string>
+    <string name="card_hint">...and a close up of your card photo</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="bio_login1">Biometric Login</string>
+    <string name="bio_login2">Allows the use of biometric authentication.</string>
+    <string name="auto_error">Can\'t have both auto fill and biometric authentication.</string>
+
+    <!-- FACETEC -->
 
     <string-array name="lang_array">
         <item>English</item>
         <item>Greek</item>
     </string-array>
-    <string name="selfie_hint">Please take a photo of your face....</string>
-    <string name="continue_hint">(Tap anywhere to continue...)</string>
-    <string name="card_hint">...and a close up of your card photo</string>
-    <string name="please_wait">Please Wait</string>
+
+
 </resources>

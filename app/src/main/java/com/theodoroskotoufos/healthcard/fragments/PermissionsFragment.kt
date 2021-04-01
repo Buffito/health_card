@@ -11,8 +11,11 @@ import androidx.navigation.Navigation
 import com.theodoroskotoufos.healthcard.R
 
 private const val PERMISSIONS_REQUEST_CODE = 10
-private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA
-    ,Manifest.permission.INTERNET)
+private val PERMISSIONS_REQUIRED = arrayOf(
+    Manifest.permission.CAMERA,
+    Manifest.permission.INTERNET,
+    Manifest.permission.ACCESS_NETWORK_STATE,
+    Manifest.permission.USE_FINGERPRINT)
 
 class PermissionsFragment : Fragment() {
 

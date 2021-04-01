@@ -1,8 +1,6 @@
 package com.theodoroskotoufos.healthcard
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -11,20 +9,14 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.google.zxing.integration.android.IntentIntegrator
-import com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment
-import com.theodoroskotoufos.healthcard.fragments.MainFragment
-import com.theodoroskotoufos.healthcard.fragments.MyProfileFragment
-import com.theodoroskotoufos.healthcard.fragments.UserProfileFragment
+import com.theodoroskotoufos.healthcard.fragments.*
 import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var container: FrameLayout
@@ -33,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         container = findViewById(R.id.fragment_container)
-
 
         changeLanguage()
     }
@@ -48,9 +39,9 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         changeLanguage()
-
+        val fragment: Fragment
         if (intent.hasExtra("flag")) {
-            val fragment: Fragment = when {
+            fragment = when {
                 intent.getStringExtra("flag").equals("profile") -> {
                     MyProfileFragment()
                 }
@@ -59,7 +50,26 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> MainFragment()
             }
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+            try {
+                supportFragmentManager.popBackStackImmediate(
+                    fragment.toString(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
+            } catch (e: IllegalStateException) {
+            }
 
+            transaction.addToBackStack(fragment.toString())
+            transaction.replace(R.id.fragment_container, fragment)
+            transaction.commitAllowingStateLoss()
+            supportFragmentManager.executePendingTransactions()
+        }else if (intent.hasExtra("finger")){
+            fragment = when {
+                intent.getBooleanExtra("finger",false) -> {
+                    MyProfileFragment()
+                }
+                else -> LoginFragment()
+            }
             val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
             try {
                 supportFragmentManager.popBackStackImmediate(
@@ -74,6 +84,8 @@ class MainActivity : AppCompatActivity() {
             transaction.commitAllowingStateLoss()
             supportFragmentManager.executePendingTransactions()
         }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -82,33 +94,24 @@ class MainActivity : AppCompatActivity() {
             if (result.contents == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
-                val userlID = result.contents.trim()
-                val mainKey = MasterKey.Builder(applicationContext)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build()
+                val user = result.contents.trim()
+                val bundle = Bundle()
+                bundle.putString("user", user)
 
-                val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
-                    application,
-                    "sharedPrefsFile",
-                    mainKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-                )
-                val editor = sharedPref.edit()
-                editor.putString("userID", userlID)
-                editor.apply()
+                val fragment = UserProfileFragment()
+                fragment.arguments = bundle
 
                 val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
                 try {
                     supportFragmentManager.popBackStackImmediate(
-                        UserProfileFragment().toString(),
+                        fragment.toString(),
                         FragmentManager.POP_BACK_STACK_INCLUSIVE
                     )
                 } catch (e: IllegalStateException) {
                 }
 
-                transaction.addToBackStack(UserProfileFragment().toString())
-                transaction.replace(R.id.fragment_container, UserProfileFragment())
+                transaction.addToBackStack(fragment.toString())
+                transaction.replace(R.id.fragment_container, fragment)
                 transaction.commitAllowingStateLoss()
                 supportFragmentManager.executePendingTransactions()
             }
@@ -124,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         val config: Configuration = resources.configuration
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
+
     }
 
     private fun changeLanguage() {
@@ -145,5 +149,7 @@ class MainActivity : AppCompatActivity() {
         else
             setLocale(this, "el")
     }
+
+
 
 }

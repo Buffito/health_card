@@ -1,82 +1,62 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.google.iot.cbor.CborArray
+import com.google.iot.cbor.CborMap
 import com.theodoroskotoufos.healthcard.R
 import de.hdodenhof.circleimageview.CircleImageView
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 
 class UserProfileFragment : Fragment() {
+    var user: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        user = this.requireArguments().getString("user").toString()
+
         return inflater.inflate(R.layout.fragment_user_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainKey = MasterKey.Builder(requireContext())
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+        val data = JSONObject(user)
+        val cborMap = CborMap.createFromJSONObject(data)
 
-        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
-            requireActivity(),
-            "sharedPrefsFile",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        initTexts(view, cborMap)
+    }
 
-        val userID = sharedPref.getString("userID", "").toString()
-        val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(userID)
+    private fun initTexts(view: View, cborMap: CborMap){
+        view.findViewById<TextView>(R.id.textPersonFirstName).text = cborMap.get("fname").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textPersonLastName).text = cborMap.get("lname").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textDate).text = cborMap.get("gender").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textGender).text = cborMap.get("dob").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textCountry).text = cborMap.get("country").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textPersonalID).text = cborMap.get("pid").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textCardID).text = cborMap.get("cid").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textVaccineName).text = cborMap.get("vname").toString().replace("\"","")
+        view.findViewById<TextView>(R.id.textDateVaccine).text = cborMap.get("dov").toString().replace("\"","")
 
-        initPhoto(view, userID)
 
-        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                view.findViewById<TextView>(R.id.textPersonFirstName).text =
-                    snapshot.child("first name").value.toString()
-                view.findViewById<TextView>(R.id.textPersonLastName).text =
-                    snapshot.child("last name").value.toString()
-                view.findViewById<TextView>(R.id.textDate).text =
-                    snapshot.child("gender").value.toString()
-                view.findViewById<TextView>(R.id.textGender).text =
-                    snapshot.child("date of birth").value.toString()
-                view.findViewById<TextView>(R.id.textCountry).text =
-                    snapshot.child("country").value.toString()
-                view.findViewById<TextView>(R.id.textPersonalID).text =
-                    snapshot.child("personal id").value.toString()
-                view.findViewById<TextView>(R.id.textCardID).text =
-                    snapshot.child("card id").value.toString()
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT)
-                    .show()
-                parentFragmentManager.popBackStackImmediate()
-            }
-        })
     }
 
     private fun initPhoto(view: View, child: String) {
@@ -99,5 +79,36 @@ class UserProfileFragment : Fragment() {
             }.addOnFailureListener { }
     }
 
+    private fun getFromFirebase(view: View){
+        val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(user)
+
+        initPhoto(view, user)
+
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                view.findViewById<TextView>(R.id.textPersonFirstName).text =
+                    snapshot.child("first name").value.toString()
+                view.findViewById<TextView>(R.id.textPersonLastName).text =
+                    snapshot.child("last name").value.toString()
+                view.findViewById<TextView>(R.id.textGender).text =
+                    snapshot.child("gender").value.toString()
+                view.findViewById<TextView>(R.id.textDate).text =
+                    snapshot.child("date of birth").value.toString()
+                view.findViewById<TextView>(R.id.textCountry).text =
+                    snapshot.child("country").value.toString()
+                view.findViewById<TextView>(R.id.textPersonalID).text =
+                    snapshot.child("personal id").value.toString()
+                view.findViewById<TextView>(R.id.textCardID).text =
+                    snapshot.child("card id").value.toString()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT)
+                    .show()
+                parentFragmentManager.popBackStackImmediate()
+            }
+        })
+    }
 
 }

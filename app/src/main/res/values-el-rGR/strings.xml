@@ -31,13 +31,21 @@
     <string name="language_sum">Επιλογή γλώσσας.</string>
     <string name="auto_fill1">Αυτόματη συμπλήρωση στοιχείων</string>
     <string name="auto_fill2">Συμπλήρωση στοιχείων του χρήστη αυτόματα.</string>
+    <string name="please_wait">Παρακαλώ περιμένετε</string>
+    <string name="selfie_hint">Τραβήξτε μία φωτογραφία του προσώπου σας....</string>
+    <string name="continue_hint">(Πατήστε οπουδήποτε για να συνεχίσετε ...)</string>
+    <string name="card_hint">... και μια κοντινή φωτογραφία της κάρτας σας</string>
+    <string name="bio_login1">Βιομετρική είσοδος</string>
+    <string name="bio_login2">Επιτρέπει τη χρήση βιομετρικού ελέγχου ταυτότητας.</string>
+    <string name="auto_error">Δε γίνεται να έχεις και αυτόματη συμπλήρωση και βιομετρική αυθεντικοποίηση.</string>
+
+    <!-- FACETEC -->
+
 
     <string-array name="lang_array">
         <item>Αγγλικά</item>
         <item>Ελληνικά</item>
     </string-array>
-    <string name="please_wait">Παρακαλώ περιμένετε</string>
-    <string name="selfie_hint">Τραβήξτε μία φωτογραφία του προσώπου σας....</string>
-    <string name="continue_hint">(Πατήστε οπουδήποτε για να συνεχίσετε ...)</string>
-    <string name="card_hint">... και μια κοντινή φωτογραφία της κάρτας σας</string>
+
+
 </resources>

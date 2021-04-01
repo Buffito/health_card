@@ -1,22 +1,25 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import androidx.fragment.app.Fragment
+import com.google.gson.Gson
+import com.google.iot.cbor.CborMap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.theodoroskotoufos.healthcard.R
+import com.theodoroskotoufos.healthcard.User
+import org.json.JSONObject
+import java.io.FileInputStream
+import java.nio.channels.FileChannel
+import java.nio.charset.Charset
 
 class ViewQrFragment : Fragment() {
 
@@ -31,21 +34,47 @@ class ViewQrFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mainKey = MasterKey.Builder(requireContext())
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
-            requireActivity(),
-            "sharedPrefsFile",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        val personalID = sharedPref.getString("personalID","").toString()
-        val bitmap = generateQRCode(personalID)
+        val jsonObject = JSONObject(readFile())
+        val user = getUser(jsonObject.getJSONObject("user"))
+        val jsonString = Gson().toJson(user)
+        val data = JSONObject(jsonString)
+        val cborMap = CborMap.createFromJSONObject(data)
+        val bitmap = generateQRCode(cborMap.toString())
         view.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
+
+    }
+
+    private fun getUser(jsonObject: JSONObject): User {
+        return User(
+            jsonObject.getString("fname"),
+            jsonObject.getString("lname"),
+            jsonObject.getString("gender"),
+            jsonObject.getString("dob"),
+            jsonObject.getString("country"),
+            jsonObject.getString("pid"),
+            jsonObject.getString("cid"),
+            jsonObject.getString("vname"),
+            jsonObject.getString("dov")
+        )
+    }
+
+
+    private fun readFile(): String {
+        val file = context?.filesDir!!.absolutePath + "/user.json"
+
+        val stream = FileInputStream(file)
+
+        var jsonString: String
+        stream.use { stream ->
+            val fileChannel = stream.channel
+            val mappedByteBuffer = fileChannel.map(
+                FileChannel.MapMode.READ_ONLY,
+                0,
+                fileChannel.size()
+            )
+            jsonString = Charset.defaultCharset().decode(mappedByteBuffer).toString()
+        }
+        return jsonString
     }
 
     private fun generateQRCode(text: String): Bitmap {

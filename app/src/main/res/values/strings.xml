@@ -34,6 +34,11 @@
     <string name="continue_hint">(Tap anywhere to continue...)</string>
     <string name="card_hint">...and a close up of your card photo</string>
     <string name="please_wait">Please Wait</string>
+    <string name="bio_login1">Biometric Login</string>
+    <string name="bio_login2">Allows the use of biometric authentication.</string>
+    <string name="auto_error">Can\'t have both auto fill and biometric authentication.</string>
+
+    <!-- FACETEC -->
 
 
     <string-array name="lang_array">

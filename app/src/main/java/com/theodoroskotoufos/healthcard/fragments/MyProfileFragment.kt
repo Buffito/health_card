@@ -1,11 +1,15 @@
 package com.theodoroskotoufos.healthcard.fragments
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +75,6 @@ class MyProfileFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.viewQrButton).setOnClickListener {
-            /// send to view qr
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
                 R.id.action_myProfileFragment_to_viewQrFragment
             )
