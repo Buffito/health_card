@@ -1,43 +1,27 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.database.*
 import com.theodoroskotoufos.healthcard.R
-import java.util.concurrent.Executor
 
 class LoginFragment : Fragment() {
-    private var exists: Boolean = false
     private var personalID: String = ""
     private var cardID: String = ""
-
 
 
     override fun onCreateView(
@@ -51,50 +35,41 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPreferences = initSharedPreferences()
 
-        val mainKey = MasterKey.Builder(requireContext())
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
-            requireActivity(),
-            "sharedPrefsFile",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
-
-        if (sharedPref.getBoolean("remember", false))
-            login()
-
-        initTexts(sharedPref, view)
-
-        view.findViewById<Button>(R.id.singInButton).setOnClickListener {
-            it.hideKeyboard()
-            if (sharedPref.getBoolean("fill", false))
+        if (sharedPreferences.getBoolean("bio", false))
+            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+                R.id.action_loginFragment_to_fingerFragment
+            )
+        else {
+            if (sharedPreferences.getBoolean("remember", false))
                 login()
-            else
-                credentialCheck(sharedPref, databaseRef, it)
-        }
 
-    }
 
-    private fun credentialCheck(sharedPref: SharedPreferences, databaseRef: DatabaseReference, view: View) {
-        databaseChildExists(databaseRef)
-        Handler(Looper.getMainLooper()).postDelayed({
-
-            if (exists || checkSharedPreferences(sharedPref)) {
-                login()
-            } else {
-                showSnackbar(view)
+            initTexts(sharedPreferences, view)
+            view.findViewById<Button>(R.id.singInButton).setOnClickListener {
+                it.hideKeyboard()
+                if (credentialCheck(sharedPreferences, view)) {
+                    login()
+                } else {
+                    showSnackbar(view)
+                }
             }
-        }, 200)
-
+        }
     }
 
-    private fun showSnackbar(view: View){
+    private fun credentialCheck(sharedPreferences: SharedPreferences, view: View): Boolean {
+        return view.findViewById<EditText>(R.id.personalID).text.toString() == sharedPreferences.getString(
+            "personalID",
+            ""
+        ).toString() &&
+                view.findViewById<EditText>(R.id.cardID).text.toString() == sharedPreferences.getString(
+            "cardID",
+            ""
+        ).toString()
+    }
+
+    private fun showSnackbar(view: View) {
         val mySnackbar =
             Snackbar.make(view, getString(R.string.login_fail), Snackbar.LENGTH_LONG)
         mySnackbar.view.setBackgroundColor(
@@ -112,11 +87,22 @@ class LoginFragment : Fragment() {
         )
     }
 
-    private fun checkSharedPreferences(sharedPref: SharedPreferences): Boolean {
-        return sharedPref.contains(personalID) && sharedPref.contains(cardID)
+
+    private fun initSharedPreferences(): SharedPreferences {
+        val mainKey = MasterKey.Builder(requireContext())
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        return EncryptedSharedPreferences.create(
+            requireActivity(),
+            "sharedPrefsFile",
+            mainKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 
-    private fun initTexts(sharedPref: SharedPreferences, view: View) {
+    private fun initTexts(sharedPreferences: SharedPreferences, view: View) {
         val editTextArray: Array<EditText> = arrayOf(
             view.findViewById(R.id.personalID),
             view.findViewById(R.id.cardID)
@@ -124,12 +110,13 @@ class LoginFragment : Fragment() {
         val notEmpty = BooleanArray(2)
         // add text changed listeners to the editTexts
 
-        val editor = sharedPref.edit()
+        val editor = sharedPreferences.edit()
 
-        if (sharedPref.getBoolean("fill", false)) {
+        if (sharedPreferences.getBoolean("fill", false)) {
             view.findViewById<EditText>(R.id.personalID)
-                .setText(sharedPref.getString("personalID", ""))
-            view.findViewById<EditText>(R.id.cardID).setText(sharedPref.getString("cardID", ""))
+                .setText(sharedPreferences.getString("personalID", ""))
+            view.findViewById<EditText>(R.id.cardID)
+                .setText(sharedPreferences.getString("cardID", ""))
             notEmpty[0] = true
             notEmpty[1] = true
             view.findViewById<Button>(R.id.singInButton).isEnabled =
@@ -171,23 +158,7 @@ class LoginFragment : Fragment() {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private fun databaseChildExists(databaseRef: DatabaseReference) {
-        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.hasChild(personalID) &&
-                    snapshot.child(personalID).child("card id").value.toString() == cardID
-                ) {
-                    exists = true
-                }
 
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                exists = false
-
-            }
-        })
-    }
 
 
 }

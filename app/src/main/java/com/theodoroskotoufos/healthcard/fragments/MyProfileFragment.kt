@@ -1,15 +1,11 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.zxing.integration.android.IntentIntegrator
 import com.theodoroskotoufos.healthcard.CaptureActivity
@@ -30,6 +22,7 @@ import com.theodoroskotoufos.healthcard.R
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.io.IOException
+
 
 class MyProfileFragment : Fragment() {
 
@@ -44,26 +37,27 @@ class MyProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPreferences = initSharedPreferences()
+        Handler(Looper.getMainLooper()).postDelayed({
+            initButtons(view)
+            initName(view, sharedPreferences)
+            initPhoto(view, sharedPreferences)
+        }, 300)
+
+    }
+
+    private fun initSharedPreferences(): SharedPreferences {
         val mainKey = MasterKey.Builder(requireContext())
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
 
-        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+        return EncryptedSharedPreferences.create(
             requireActivity(),
             "sharedPrefsFile",
             mainKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-
-        val personalID = sharedPref.getString("personalID", "").toString()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            initButtons(view)
-            initName(view, personalID)
-            initPhoto(view, personalID)
-        }, 300)
-
     }
 
     private fun initButtons(view: View) {
@@ -92,47 +86,40 @@ class MyProfileFragment : Fragment() {
         }
     }
 
-    private fun initName(view: View, child: String) {
-        var fname: String
-        var lname: String
-        var name: String
-        val databaseRef = FirebaseDatabase.getInstance().reference.child("users").child(child)
-        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                fname =
-                    snapshot.child("first name").value.toString().trim()
-                lname = snapshot.child("last name").value.toString().trim()
-                name = "$fname $lname"
-                view.findViewById<TextView>(R.id.textViewName).text = name
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                name = "Null"
-                view.findViewById<TextView>(R.id.textViewName).text = name
-            }
-        })
-
+    private fun initName(view: View, sharedPreferences: SharedPreferences) {
+        val fname: String = sharedPreferences.getString("first_name", "").toString()
+        val lname: String = sharedPreferences.getString("last_name", "").toString()
+        val name = "$fname $lname"
+        view.findViewById<TextView>(R.id.textViewName).text = name
     }
 
-    private fun initPhoto(view: View, child: String) {
-        val imagesRef = FirebaseStorage.getInstance().reference.child("images").child(child)
-        val selfieRef = imagesRef.child("selfie")
-        var selfieFile: File? = null
-        try {
-            selfieFile = File.createTempFile("selfie", ".jpeg")
-        } catch (e: IOException) {
-            e.printStackTrace()
+    private fun initPhoto(view: View, sharedPreferences: SharedPreferences) {
+        val child = sharedPreferences.getString("personalID", "").toString()
+        if (child.isNotEmpty()) {
+            val imagesRef = FirebaseStorage.getInstance().reference.child("images").child(child)
+            val selfieRef = imagesRef.child("selfie")
+            var selfieFile: File? = null
+            try {
+                selfieFile = File.createTempFile("selfie", ".jpeg")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            var selfieBitmap: Bitmap
+            val finalSelfieFile = selfieFile
+            selfieRef.getFile(selfieFile!!)
+                .addOnSuccessListener {
+                    // Local temp file has been created
+                    selfieBitmap = BitmapFactory.decodeFile(finalSelfieFile!!.path)
+                    view.findViewById<CircleImageView>(R.id.profile_image)
+                        .setImageBitmap(selfieBitmap)
+                }.addOnFailureListener {
+                    val bm = BitmapFactory.decodeResource(resources, R.drawable.white)
+                    view.findViewById<CircleImageView>(R.id.profile_image).setImageBitmap(bm)
+                }
+        } else {
+            val bm = BitmapFactory.decodeResource(resources, R.drawable.white)
+            view.findViewById<CircleImageView>(R.id.profile_image).setImageBitmap(bm)
         }
-
-        var selfieBitmap: Bitmap
-        val finalSelfieFile = selfieFile
-        selfieRef.getFile(selfieFile!!)
-            .addOnSuccessListener {
-                // Local temp file has been created
-                selfieBitmap = BitmapFactory.decodeFile(finalSelfieFile!!.path)
-                view.findViewById<CircleImageView>(R.id.profile_image).setImageBitmap(selfieBitmap)
-            }.addOnFailureListener { }
     }
 
     private fun scanQRCode() {

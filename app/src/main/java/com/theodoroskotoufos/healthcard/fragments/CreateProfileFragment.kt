@@ -26,7 +26,6 @@ import java.io.FileWriter
 import java.io.Writer
 import java.util.*
 
-
 class CreateProfileFragment : Fragment() {
     private var gender: String = ""
     private var personalID: String = ""
@@ -44,13 +43,13 @@ class CreateProfileFragment : Fragment() {
 
         toolbar.title = getString(R.string.create_profile)
 
+        val sharedPreferences = initSharedPreferences()
         initTexts(view)
         initSpinner(view)
 
         view.findViewById<Button>(R.id.nextButton).setOnClickListener {
             /// save to firebase/shared preferences and open user profile
-            saveToFirebase(view)
-            saveToSharedPref(view)
+            saveToSharedPref(view, sharedPreferences)
             toJson(view)
 
             val intent = Intent(requireContext(), FacetecAppActivity::class.java)
@@ -62,7 +61,6 @@ class CreateProfileFragment : Fragment() {
     private fun emptyArrayCheck(array: BooleanArray): Boolean {
         return array[0] && array[1] && array[2] && array[3] && array[4] && array[5] && array[6] && array[7]
     }
-
 
     private fun initTexts(view: View) {
         val editTextArray: Array<EditText> = arrayOf(
@@ -173,62 +171,47 @@ class CreateProfileFragment : Fragment() {
         }
     }
 
-    private fun saveToFirebase(view: View) {
+    private fun saveToFirebase(view: View, jsonString: String) {
         val databaseRef = FirebaseDatabase.getInstance().reference.child("users")
         personalID = view.findViewById<EditText>(R.id.editTextPersonalID).text.toString()
         val myRef = databaseRef.child(personalID)
 
-        myRef.child("first name")
-            .setValue(view.findViewById<EditText>(R.id.editTextPersonFirstName).text.toString())
-        myRef.child("last name")
-            .setValue(view.findViewById<EditText>(R.id.editTextPersonLastName).text.toString())
-        myRef.child("gender")
-            .setValue(gender)
-        myRef.child("date of birth")
-            .setValue(view.findViewById<EditText>(R.id.editTextDate).text.toString())
-        myRef.child("country")
-            .setValue(view.findViewById<EditText>(R.id.editTextCountry).text.toString())
-        myRef.child("personal id")
-            .setValue(personalID)
-        myRef.child("card id")
-            .setValue(view.findViewById<EditText>(R.id.editTextCardID).text.toString())
+        myRef.child("cbor")
+            .setValue(jsonString)
+
     }
 
-    private fun saveToSharedPref(view: View) {
-
+    private fun initSharedPreferences(): SharedPreferences {
         val mainKey = MasterKey.Builder(requireContext())
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
 
-        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
+        return EncryptedSharedPreferences.create(
             requireActivity(),
             "sharedPrefsFile",
             mainKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
 
-        val editor = sharedPref.edit()
+    private fun saveToSharedPref(view: View, sharedPreferences: SharedPreferences) {
+        val editor = sharedPreferences.edit()
         editor.putString(
-            "vaccine_name",
-            view.findViewById<EditText>(R.id.editTextVaccineName).text.toString()
+            "first_name",
+            view.findViewById<EditText>(R.id.editTextPersonFirstName).text.toString()
         )
         editor.putString(
-            "vaccine_date",
-            view.findViewById<EditText>(R.id.editTextDateVaccine).text.toString()
+            "last_name",
+            view.findViewById<EditText>(R.id.editTextPersonLastName).text.toString()
         )
         editor.putString("personalID", personalID)
         editor.putString("cardID", view.findViewById<EditText>(R.id.editTextCardID).text.toString())
-        editor.putString("gender", gender)
-        editor.putString(
-            "country",
-            view.findViewById<EditText>(R.id.editTextCountry).text.toString()
-        )
         editor.apply()
 
     }
 
-    private fun toJson(view: View){
+    private fun toJson(view: View) {
         val json = JSONObject()
 
         val user = User(
@@ -244,28 +227,29 @@ class CreateProfileFragment : Fragment() {
         )
 
         json.put("user", addUser(user))
+        saveToFirebase(view, json.toString())
         saveJson(json.toString())
 
     }
 
     private fun addUser(user: User): JSONObject {
         return JSONObject()
-            .put("fname",user.fname)
-            .put("lname",user.lname)
-            .put("gender",user.gender)
-            .put("dob",user.dob)
-            .put("country",user.country)
-            .put("pid",user.pid)
-            .put("cid",user.cid)
-            .put("vname",user.vname)
-            .put("dov",user.dov)
+            .put("fname", user.fname)
+            .put("lname", user.lname)
+            .put("gender", user.gender)
+            .put("dob", user.dob)
+            .put("country", user.country)
+            .put("pid", user.pid)
+            .put("cid", user.cid)
+            .put("vname", user.vname)
+            .put("dov", user.dov)
 
     }
 
-    private fun saveJson(jsonString: String){
+    private fun saveJson(jsonString: String) {
         val output: Writer
-        val filename = context?.filesDir!!.absolutePath + "/user.json"
-        val file = File(filename)
+        val fileName = "$personalID.json"
+        val file = File(context?.filesDir!!.absolutePath, fileName)
         file.createNewFile()
         output = BufferedWriter(FileWriter(file))
         output.write(jsonString)

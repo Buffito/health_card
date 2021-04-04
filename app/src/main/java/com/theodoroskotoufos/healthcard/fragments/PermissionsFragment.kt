@@ -28,7 +28,8 @@ class PermissionsFragment : Fragment() {
         } else {
             // If permissions have already been granted, proceed
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                R.id.action_permissionsFragment_to_mainFragment)
+                R.id.action_permissionsFragment_to_mainFragment2
+            )
         }
     }
 
@@ -40,7 +41,8 @@ class PermissionsFragment : Fragment() {
                 // Take the user to the success fragment when permission is granted
                 Toast.makeText(context, "Permission request granted", Toast.LENGTH_LONG).show()
                 Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                    R.id.action_permissionsFragment_to_mainFragment)
+                    R.id.action_permissionsFragment_to_mainFragment2
+                )
             } else {
                 Toast.makeText(context, "Permission request denied", Toast.LENGTH_LONG).show()
             }

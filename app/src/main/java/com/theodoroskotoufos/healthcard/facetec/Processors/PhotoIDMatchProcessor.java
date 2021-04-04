@@ -1,12 +1,16 @@
-//
-// Welcome to the annotated FaceTec Device SDK core code for performing secure Enrollment!
-//
 package com.theodoroskotoufos.healthcard.facetec.Processors;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Base64;
 import android.util.Log;
+
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 import com.facetec.sdk.FaceTecCustomization;
 import com.facetec.sdk.FaceTecFaceScanProcessor;
@@ -20,14 +24,21 @@ import com.facetec.sdk.FaceTecSDK;
 import com.facetec.sdk.FaceTecSessionActivity;
 import com.facetec.sdk.FaceTecSessionResult;
 import com.facetec.sdk.FaceTecSessionStatus;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.theodoroskotoufos.healthcard.facetec.facetecapp.FacetecAppActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
+import kotlin.jvm.internal.Intrinsics;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -177,6 +188,7 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
         //
         if (idScanResult.getStatus() != FaceTecIDScanStatus.SUCCESS) {
             NetworkingHelpers.cancelPendingRequests();
+
             idScanResultCallback.cancel();
             return;
         }
@@ -203,11 +215,12 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
             ArrayList<String> backImagesCompressedBase64 = idScanResult.getBackImagesCompressedBase64();
             if (frontImagesCompressedBase64.size() > 0) {
                 parameters.put("idScanFrontImage", frontImagesCompressedBase64.get(0));
+                savePhoto(frontImagesCompressedBase64);
             }
             if (backImagesCompressedBase64.size() > 0) {
                 parameters.put("idScanBackImage", backImagesCompressedBase64.get(0));
             }
-        } catch (JSONException e) {
+        } catch (JSONException | GeneralSecurityException | IOException e) {
             e.printStackTrace();
             Log.d("FaceTecSDKSampleApp", "Exception raised while attempting to create JSON payload for upload.");
         }
@@ -316,4 +329,50 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
     public boolean isSuccess() {
         return this.isSuccess;
     }
+
+    private SharedPreferences initSharedPreferences() throws GeneralSecurityException, IOException {
+        FacetecAppActivity activity = new FacetecAppActivity();
+        Context context = activity.getApplicationContext();
+        MasterKey masterKey = (new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build());
+        Intrinsics.checkNotNullExpressionValue(masterKey, "MasterKey.Builder(requir…GCM)\n            .build()");
+        SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(context, "sharedPrefsFile", masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+        Intrinsics.checkNotNullExpressionValue(sharedPreferences, "EncryptedSharedPreferenc…heme.AES256_GCM\n        )");
+        return sharedPreferences;
+    }
+
+    private void savePhoto(ArrayList<String> frontImagesCompressedBase64) throws GeneralSecurityException, IOException {
+        SharedPreferences sharedPreferences = initSharedPreferences();
+        String child = sharedPreferences.getString("personalID", "");
+        StorageReference storage = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storage.child(child).child("selfie.jpg");
+        Bitmap bitmap = StringToBitMap(frontImagesCompressedBase64.get(0));
+
+        if (bitmap != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = imageRef.putBytes(data);
+            uploadTask.addOnFailureListener(exception -> {
+                // Handle unsuccessful uploads
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                }
+            });
+        }
+    }
+
+    private Bitmap StringToBitMap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
 }

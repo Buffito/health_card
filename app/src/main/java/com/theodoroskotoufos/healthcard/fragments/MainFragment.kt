@@ -1,6 +1,5 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +39,7 @@ class MainFragment : Fragment() {
 
         view.findViewById<Button>(R.id.createProfileButton).setOnClickListener {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                R.id.action_mainFragment_to_create_profile_fragment
+                R.id.action_mainFragment_to_createProfileFragment
             )
         }
     }
@@ -51,7 +50,7 @@ class MainFragment : Fragment() {
         // user could have removed them while the app was in paused state.
         if (!PermissionsFragment.hasPermissions(requireContext())) {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                R.id.action_mainFragment_to_permissionsFragment
+                R.id.action_mainFragment_to_permissionsFragment2
             )
         }
     }

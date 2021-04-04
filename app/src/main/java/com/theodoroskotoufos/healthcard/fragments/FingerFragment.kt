@@ -4,17 +4,15 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
-import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.theodoroskotoufos.healthcard.FingerPrintHelper
 import com.theodoroskotoufos.healthcard.R
-import java.lang.Exception
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -26,13 +24,11 @@ class FingerFragment : Fragment() {
 
     lateinit var keyStore : KeyStore
     lateinit var keyGenerator: KeyGenerator
-    var KEY_NAME = "key"
+    private var KEY_NAME = "key"
 
     lateinit var cipher: Cipher
     lateinit var cryptoObject : FingerprintManager.CryptoObject
 
-    lateinit var cancellationSignal: CancellationSignal
-    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,24 +58,30 @@ class FingerFragment : Fragment() {
             keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,"AndroidKeyStore")
             keyStore.load(null)
             keyGenerator.init(
-                KeyGenParameterSpec.Builder(KEY_NAME,
-                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                KeyGenParameterSpec.Builder(
+                    KEY_NAME,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                )
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setUserAuthenticationRequired(true)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                    .build())
+                    .build()
+            )
             keyGenerator.generateKey()
-        }catch (e: Exception){}
+        } catch (e: Exception) {
+        }
 
-        if (initCipher()){
+        if (initCipher()) {
             cipher.let {
                 cryptoObject = FingerprintManager.CryptoObject(it)
             }
         }
 
         val helper = FingerPrintHelper(requireContext())
-        if (fingerPrintManager != null && cryptoObject != null)
-            helper.startAuth(fingerPrintManager,cryptoObject) 
+        if (fingerPrintManager != null && cryptoObject != null) {
+            helper.startAuth(fingerPrintManager, cryptoObject)
+        }
+
     }
 
     private fun initCipher(): Boolean {
@@ -87,49 +89,22 @@ class FingerFragment : Fragment() {
             cipher = Cipher.getInstance(
                 KeyProperties.KEY_ALGORITHM_AES + "/"
                         + KeyProperties.BLOCK_MODE_CBC + "/"
-                        + KeyProperties.ENCRYPTION_PADDING_PKCS7)
-        }catch (e: Exception){
+                        + KeyProperties.ENCRYPTION_PADDING_PKCS7
+            )
+        } catch (e: Exception) {
             return false
         }
 
-        try {
+        return try {
             keyStore.load(null)
-            val key = keyStore.getKey(KEY_NAME,null) as SecretKey
-            cipher.init(Cipher.ENCRYPT_MODE,key)
-            return true
-        }catch (e: Exception){
-            return false
+            val key = keyStore.getKey(KEY_NAME, null) as SecretKey
+            cipher.init(Cipher.ENCRYPT_MODE, key)
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 
     
 }
 
-class FingerPrintHelper(private val context: Context) : FingerprintManager.AuthenticationCallback() {
-    lateinit var cancellationSignal: CancellationSignal
-
-    fun startAuth(manager: FingerprintManager, cryptoObject: FingerprintManager.CryptoObject){
-        cancellationSignal = CancellationSignal()
-
-        manager.authenticate(cryptoObject,cancellationSignal,0,this,null)
-
-    }
-
-    override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
-        super.onAuthenticationError(errorCode, errString)
-    }
-
-    override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
-        super.onAuthenticationHelp(helpCode, helpString)
-    }
-
-    override fun onAuthenticationSucceeded(result: FingerprintManager.AuthenticationResult?) {
-        super.onAuthenticationSucceeded(result)
-
-    }
-
-    override fun onAuthenticationFailed() {
-        super.onAuthenticationFailed()
-        Toast.makeText(context,R.string.error,Toast.LENGTH_SHORT).show()
-    }
-}

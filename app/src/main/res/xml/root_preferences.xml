@@ -19,14 +19,4 @@
             android:summary="@string/bio_login2"/>
 
     </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/language">
-        <ListPreference
-            android:entries="@array/lang_array"
-            android:entryValues="@array/lang_array"
-            android:key="lang"
-            android:title="@string/language"
-            android:summary="@string/language_sum"/>
-    </PreferenceCategory>
-
 </PreferenceScreen>

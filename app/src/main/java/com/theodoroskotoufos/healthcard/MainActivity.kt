@@ -1,10 +1,6 @@
 package com.theodoroskotoufos.healthcard
 
-import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -12,11 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import com.google.zxing.integration.android.IntentIntegrator
-import com.theodoroskotoufos.healthcard.fragments.*
-import java.util.*
+import com.theodoroskotoufos.healthcard.fragments.MainFragment
+import com.theodoroskotoufos.healthcard.fragments.MyProfileFragment
+import com.theodoroskotoufos.healthcard.fragments.UserProfileFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var container: FrameLayout
@@ -26,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         container = findViewById(R.id.fragment_container)
 
-        changeLanguage()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -34,48 +28,24 @@ class MainActivity : AppCompatActivity() {
         setIntent(intent)
     }
 
-
     override fun onResume() {
         super.onResume()
 
-        changeLanguage()
         val fragment: Fragment
         if (intent.hasExtra("flag")) {
-            fragment = when {
-                intent.getStringExtra("flag").equals("profile") -> {
-                    MyProfileFragment()
-                }
-                intent.getStringExtra("flag").equals("create") -> {
-                    CreateProfileFragment()
-                }
-                else -> MainFragment()
-            }
-            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            try {
-                supportFragmentManager.popBackStackImmediate(
-                    fragment.toString(),
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE
-                )
-            } catch (e: IllegalStateException) {
-            }
+            fragment = if (intent.getBooleanExtra("flag", false))
+                MyProfileFragment()
+            else
+                MainFragment()
 
-            transaction.addToBackStack(fragment.toString())
-            transaction.replace(R.id.fragment_container, fragment)
-            transaction.commitAllowingStateLoss()
-            supportFragmentManager.executePendingTransactions()
-        }else if (intent.hasExtra("finger")){
-            fragment = when {
-                intent.getBooleanExtra("finger",false) -> {
-                    MyProfileFragment()
-                }
-                else -> LoginFragment()
-            }
             val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+
             try {
                 supportFragmentManager.popBackStackImmediate(
                     fragment.toString(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
+
             } catch (e: IllegalStateException) {
             }
 
@@ -119,37 +89,5 @@ class MainActivity : AppCompatActivity() {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
-    fun setLocale(activity: Activity, languageCode: String?) {
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
-        val resources: Resources = activity.resources
-        val config: Configuration = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-
-    }
-
-    private fun changeLanguage() {
-        val mainKey = MasterKey.Builder(applicationContext)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        val sharedPref: SharedPreferences = EncryptedSharedPreferences.create(
-            this,
-            "sharedPrefsFile",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        val languageCode = sharedPref.getString("lang", "en")
-        if (languageCode == "en")
-            setLocale(this, "en")
-        else
-            setLocale(this, "el")
-    }
-
-
 
 }
