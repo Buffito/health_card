@@ -1,6 +1,7 @@
 package com.theodoroskotoufos.healthcard.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +18,7 @@ import androidx.navigation.Navigation
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.google.android.material.snackbar.Snackbar
+import com.theodoroskotoufos.healthcard.MyProfileActivity
 import com.theodoroskotoufos.healthcard.R
 
 class LoginFragment : Fragment() {
@@ -37,11 +39,11 @@ class LoginFragment : Fragment() {
 
         val sharedPreferences = initSharedPreferences()
 
-        if (sharedPreferences.getBoolean("bio", false))
+        if (sharedPreferences.getBoolean("bio", false)) {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
                 R.id.action_loginFragment_to_fingerFragment
             )
-        else {
+        } else {
             if (sharedPreferences.getBoolean("remember", false))
                 login()
 
@@ -82,9 +84,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-        Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-            R.id.action_loginFragment_to_myProfileFragment
-        )
+        val intent = Intent(requireContext(), MyProfileActivity::class.java)
+        startActivity(intent)
     }
 
 

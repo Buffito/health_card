@@ -7,13 +7,16 @@ import android.util.Log;
 
 import androidx.databinding.DataBindingUtil;
 
+import com.facetec.sdk.FaceTecIDScanResult;
 import com.facetec.sdk.FaceTecSDK;
+import com.facetec.sdk.FaceTecSessionResult;
 import com.theodoroskotoufos.healthcard.MainActivity;
+import com.theodoroskotoufos.healthcard.MyProfileActivity;
 import com.theodoroskotoufos.healthcard.R;
 import com.theodoroskotoufos.healthcard.databinding.ActivityFacetecAppBinding;
 import com.theodoroskotoufos.healthcard.facetec.Processors.Config;
+import com.theodoroskotoufos.healthcard.facetec.Processors.EnrollmentProcessor;
 import com.theodoroskotoufos.healthcard.facetec.Processors.NetworkingHelpers;
-import com.theodoroskotoufos.healthcard.facetec.Processors.PhotoIDMatchProcessor;
 import com.theodoroskotoufos.healthcard.facetec.Processors.Processor;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +36,9 @@ public class FacetecAppActivity extends Activity {
     public FacetecAppUtilities utils = new FacetecAppUtilities(this);
     public Processor latestProcessor;
     String latestExternalDatabaseRefID = "";
+    public FaceTecSessionResult latestSessionResult;
+    public FaceTecIDScanResult latestIDScanResult;
+    JSONObject latestServerResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +58,24 @@ public class FacetecAppActivity extends Activity {
 
         FaceTecSDK.setCustomization(Config.currentCustomization);
 
-
-        photoID();
+        enrollUser();
     }
 
-
-    public void photoID() {
-        utils.fadeOutMainUIAndPrepareForFaceTecSDK(() -> getSessionToken(sessionToken -> {
-            latestExternalDatabaseRefID = "android_sample_app_" + randomUUID();
-            latestProcessor = new PhotoIDMatchProcessor(sessionToken, FacetecAppActivity.this);
-        }));
+    public void enrollUser() {
+        utils.fadeOutMainUIAndPrepareForFaceTecSDK(new Runnable() {
+            @Override
+            public void run() {
+                getSessionToken(new SessionTokenCallback() {
+                    @Override
+                    public void onSessionTokenReceived(String sessionToken) {
+                        latestExternalDatabaseRefID = "android_sample_app_" + randomUUID();
+                        latestProcessor = new EnrollmentProcessor(sessionToken, FacetecAppActivity.this);
+                    }
+                });
+            }
+        });
     }
+
 
     // When the FaceTec SDK is completely done, you receive control back here.
     // Since you have already handled all results in your Processor code, how you proceed here is up to you and how your App works.
@@ -73,26 +86,24 @@ public class FacetecAppActivity extends Activity {
         }
 
         utils.fadeInMainUI();
-        Intent intent = new Intent(this, MainActivity.class);
 
         // At this point, you have already handled all results in your Processor code.
         if (this.latestProcessor.isSuccess()) {
             utils.displayStatus("Success");
-            intent.putExtra("flag", "profile");
-
+            Intent intent = new Intent(this, MyProfileActivity.class);
+            startActivity(intent);
         } else {
             utils.displayStatus("Session exited early, see logs for more details.");
 
             // Reset the enrollment identifier.
             latestExternalDatabaseRefID = "";
-
+            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("flag", "create");
+            startActivity(intent);
+
         }
 
-        startActivity(intent);
-
     }
-
 
     public String getLatestExternalDatabaseRefID() {
         return latestExternalDatabaseRefID;
@@ -101,7 +112,6 @@ public class FacetecAppActivity extends Activity {
     public void configureInitialSampleAppUI() {
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_facetec_app);
         utils.displayStatus("Initializing...");
-
 
     }
 
@@ -152,5 +162,17 @@ public class FacetecAppActivity extends Activity {
 
     interface SessionTokenCallback {
         void onSessionTokenReceived(String sessionToken);
+    }
+
+    public void setLatestSessionResult(FaceTecSessionResult sessionResult) {
+        this.latestSessionResult = sessionResult;
+    }
+
+    public void setLatestIDScanResult(FaceTecIDScanResult idScanResult) {
+        this.latestIDScanResult = idScanResult;
+    }
+
+    public void setLatestServerResult(JSONObject responseJSON) {
+        this.latestServerResult = responseJSON;
     }
 }

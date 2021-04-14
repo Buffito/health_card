@@ -63,13 +63,13 @@ class MyProfileFragment : Fragment() {
     private fun initButtons(view: View) {
         view.findViewById<Button>(R.id.infoButton).setOnClickListener {
             /// send to more info
-            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+            Navigation.findNavController(requireActivity(), R.id.fragment_container2).navigate(
                 R.id.action_myProfileFragment_to_profileInfoFragment
             )
         }
 
         view.findViewById<Button>(R.id.viewQrButton).setOnClickListener {
-            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+            Navigation.findNavController(requireActivity(), R.id.fragment_container2).navigate(
                 R.id.action_myProfileFragment_to_viewQrFragment
             )
         }
@@ -80,7 +80,7 @@ class MyProfileFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.settingsButton).setOnClickListener {
-            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+            Navigation.findNavController(requireActivity(), R.id.fragment_container2).navigate(
                 R.id.action_myProfileFragment_to_settingsFragment
             )
         }

@@ -1,9 +1,12 @@
 package com.theodoroskotoufos.healthcard.fragments
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -26,9 +29,13 @@ import java.io.FileWriter
 import java.io.Writer
 import java.util.*
 
-class CreateProfileFragment : Fragment() {
+class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private var gender: String = ""
     private var personalID: String = ""
+
+    private lateinit var date: EditText
+    private lateinit var vdate: EditText
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,37 +49,91 @@ class CreateProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolbar.title = getString(R.string.create_profile)
+        date = view.findViewById(R.id.editTextDate)
+        vdate = view.findViewById(R.id.editTextDateVaccine)
 
         val sharedPreferences = initSharedPreferences()
         initTexts(view)
         initSpinner(view)
+
 
         view.findViewById<Button>(R.id.nextButton).setOnClickListener {
             /// save to firebase/shared preferences and open user profile
             saveToSharedPref(view, sharedPreferences)
             toJson(view)
 
-            val intent = Intent(requireContext(), FacetecAppActivity::class.java)
-            startActivity(intent)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(requireContext(), FacetecAppActivity::class.java)
+                startActivity(intent)
+            }, 300)
         }
+
     }
 
+    private fun showDatePickerDialog() {
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            this,
+            Calendar.getInstance()[Calendar.YEAR],
+            Calendar.getInstance()[Calendar.MONTH],
+            Calendar.getInstance()[Calendar.DAY_OF_MONTH]
+        )
+        datePickerDialog.updateDate(2000, 0, 0)
+        datePickerDialog.show()
+    }
+
+    private fun showVacDatePickerDialog() {
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            this,
+            Calendar.getInstance()[Calendar.YEAR],
+            Calendar.getInstance()[Calendar.MONTH],
+            Calendar.getInstance()[Calendar.DAY_OF_MONTH]
+        )
+        datePickerDialog.show()
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        var myMonth = month
+        myMonth++
+        val temp = "$dayOfMonth/$myMonth/$year"
+        if (year < (Calendar.getInstance().get(Calendar.YEAR) - 1)) {
+            date.setText(temp)
+        } else {
+            vdate.setText(temp)
+        }
+    }
 
     private fun emptyArrayCheck(array: BooleanArray): Boolean {
         return array[0] && array[1] && array[2] && array[3] && array[4] && array[5] && array[6] && array[7]
     }
 
     private fun initTexts(view: View) {
+        view.findViewById<TextView>(R.id.editTextDate).setOnClickListener {
+            showDatePickerDialog()
+            it.hideKeyboard()
+        }
+
+        view.findViewById<TextView>(R.id.editTextDateVaccine).setOnClickListener {
+            showVacDatePickerDialog()
+            it.hideKeyboard()
+        }
+
+
         val editTextArray: Array<EditText> = arrayOf(
             view.findViewById(R.id.editTextPersonFirstName),
             view.findViewById(R.id.editTextPersonLastName),
-            view.findViewById(R.id.editTextDate),
+            date,
             view.findViewById(R.id.editTextCountry),
             view.findViewById(R.id.editTextPersonalID),
             view.findViewById(R.id.editTextCardID),
             view.findViewById(R.id.editTextVaccineName),
-            view.findViewById(R.id.editTextDateVaccine)
+            vdate
         )
+
+        if (date.hasFocus() || vdate.hasFocus())
+            view.hideKeyboard()
 
         val notEmpty = BooleanArray(8)
 
@@ -97,53 +158,10 @@ class CreateProfileFragment : Fragment() {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (i == 2 || i == 7) {
-                        dateCheck(s, i, editTextArray, notEmpty)
-                        return
-                    }
-
                     notEmpty[i] = !s.isNullOrEmpty()
 
                 }
             })
-        }
-    }
-
-    private fun dateCheck(
-        s: CharSequence?,
-        i: Int,
-        editTextArray: Array<EditText>,
-        notEmpty: BooleanArray
-    ) {
-        if (s != null) {
-            if (s.isNotEmpty()) {
-                val regex =
-                    "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))\$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$".toRegex()
-                if (!s.toString().contains(regex)) {
-                    editTextArray[i].error =
-                        getString(R.string.invalid_date)
-
-                    notEmpty[i] = false
-                } else {
-                    if (s.length == 10) {
-                        val ss =
-                            s[6].toString() + s[7].toString() + s[8].toString() + s[9].toString()
-                        if (ss.toInt() > Calendar.getInstance()
-                                .get(Calendar.YEAR)
-                        ) {
-                            editTextArray[i].error =
-                                getString(R.string.future)
-
-                            notEmpty[i] = false
-                        } else
-
-                            notEmpty[i] = true
-                    }
-
-
-                }
-
-            }
         }
     }
 
@@ -218,12 +236,12 @@ class CreateProfileFragment : Fragment() {
             view.findViewById<EditText>(R.id.editTextPersonFirstName).text.toString(),
             view.findViewById<EditText>(R.id.editTextPersonLastName).text.toString(),
             gender,
-            view.findViewById<EditText>(R.id.editTextDate).text.toString(),
+            view.findViewById<TextView>(R.id.editTextDate).text.toString(),
             view.findViewById<EditText>(R.id.editTextCountry).text.toString(),
             view.findViewById<EditText>(R.id.editTextPersonalID).text.toString(),
             view.findViewById<EditText>(R.id.editTextCardID).text.toString(),
             view.findViewById<EditText>(R.id.editTextVaccineName).text.toString(),
-            view.findViewById<EditText>(R.id.editTextDateVaccine).text.toString()
+            view.findViewById<TextView>(R.id.editTextDateVaccine).text.toString()
         )
 
         json.put("user", addUser(user))
@@ -248,8 +266,8 @@ class CreateProfileFragment : Fragment() {
 
     private fun saveJson(jsonString: String) {
         val output: Writer
-        val fileName = "$personalID.json"
-        val file = File(context?.filesDir!!.absolutePath, fileName)
+        val fileName = "user.json"
+        val file = File(context?.filesDir?.absolutePath, fileName)
         file.createNewFile()
         output = BufferedWriter(FileWriter(file))
         output.write(jsonString)

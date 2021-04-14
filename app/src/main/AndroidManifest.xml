@@ -21,6 +21,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCard">
+        <activity android:name=".FingerActivity"></activity>
+        <activity
+            android:name=".MyProfileActivity"
+            android:theme="@style/Theme.HealthCard.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.HealthCard.NoActionBar">
@@ -35,13 +39,10 @@
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".facetec.facetecapp.FacetecAppActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="userPortrait">
-        </activity>
-
+            android:screenOrientation="userPortrait" />
     </application>
 
 </manifest>

@@ -169,16 +169,15 @@ class ProfileInfoFragment : Fragment() {
     }
 
     private fun fileExists(): Boolean {
-        val sharedPreferences = initSharedPreferences()
-        val fileName = sharedPreferences.getString("personalID", "").toString() + ".json"
-        val file = File(context?.filesDir!!.absolutePath, fileName)
+        val fileName = "user.json"
+        val file = File(context?.filesDir?.absolutePath, fileName)
         return file.exists()
     }
 
     private fun readFile(): String {
-        val sharedPreferences = initSharedPreferences()
-        val fileName = sharedPreferences.getString("personalID", "").toString() + ".json"
-        val file = File(context?.filesDir!!.absolutePath, fileName)
+        initSharedPreferences()
+        val fileName = "user.json"
+        val file = File(context?.filesDir?.absolutePath, fileName)
 
         val stream = FileInputStream(file)
 

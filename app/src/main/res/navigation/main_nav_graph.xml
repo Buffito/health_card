@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_mainFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
     </fragment>
 
     <fragment
@@ -39,12 +42,7 @@
         android:label="UserProfileFragment"
         tools:layout="@layout/fragment_user_profile">
 
-        <action
-            android:id="@+id/action_userProfileFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
     </fragment>
-
-
     <fragment
         android:id="@+id/createProfileFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment"
@@ -59,67 +57,16 @@
         android:name="com.theodoroskotoufos.healthcard.fragments.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
-
         <action
             android:id="@+id/action_loginFragment_to_fingerFragment"
             app:destination="@id/fingerFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/viewQrFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.ViewQrFragment"
-        android:label="ViewQrFragment"
-        tools:layout="@layout/fragment_view_qr">
-        <action
-            android:id="@+id/action_viewQrFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/myProfileFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.MyProfileFragment"
-        android:label="MyProfileFragment"
-        tools:layout="@layout/fragment_my_profile">
 
-        <action
-            android:id="@+id/action_myProfileFragment_to_profileInfoFragment"
-            app:destination="@id/profileInfoFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_viewQrFragment"
-            app:destination="@id/viewQrFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
-        <action
-            android:id="@+id/action_myProfileFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/profileInfoFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.ProfileInfoFragment"
-        android:label="ProfileInfoFragment"
-        tools:layout="@layout/fragment_profile_info">
-        <action
-            android:id="@+id/action_profileInfoFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.theodoroskotoufos.healthcard.fragments.SettingsFragment"
-        android:label="SettingsFragment">
-        <action
-            android:id="@+id/action_settingsFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
-    </fragment>
     <fragment
         android:id="@+id/fingerFragment"
         android:name="com.theodoroskotoufos.healthcard.fragments.FingerFragment"
         android:label="fragment_finger"
         tools:layout="@layout/fragment_finger">
 
-        <action
-            android:id="@+id/action_fingerFragment_to_myProfileFragment"
-            app:destination="@id/myProfileFragment" />
     </fragment>
 </navigation>

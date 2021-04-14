@@ -1,6 +1,7 @@
 package com.theodoroskotoufos.healthcard
 
 import android.content.Context
+import android.content.Intent
 import android.hardware.fingerprint.FingerprintManager
 import android.os.CancellationSignal
 
@@ -24,7 +25,8 @@ class FingerPrintHelper(private val context: Context) : FingerprintManager.Authe
 
     override fun onAuthenticationSucceeded(result: FingerprintManager.AuthenticationResult?) {
         super.onAuthenticationSucceeded(result)
-
+        val intent = Intent(context, MyProfileActivity::class.java)
+        context.startActivity(intent)
     }
 
 }

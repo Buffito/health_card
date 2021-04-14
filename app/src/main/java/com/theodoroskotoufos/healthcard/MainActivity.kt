@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.zxing.integration.android.IntentIntegrator
+import com.theodoroskotoufos.healthcard.fragments.CreateProfileFragment
 import com.theodoroskotoufos.healthcard.fragments.MainFragment
-import com.theodoroskotoufos.healthcard.fragments.MyProfileFragment
 import com.theodoroskotoufos.healthcard.fragments.UserProfileFragment
 
 class MainActivity : AppCompatActivity() {
@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity() {
 
         val fragment: Fragment
         if (intent.hasExtra("flag")) {
-            fragment = if (intent.getBooleanExtra("flag", false))
-                MyProfileFragment()
-            else
+            fragment = if (intent.getStringExtra("flag") == "create") {
+                CreateProfileFragment()
+            } else
                 MainFragment()
 
             val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
@@ -54,9 +54,9 @@ class MainActivity : AppCompatActivity() {
             transaction.commitAllowingStateLoss()
             supportFragmentManager.executePendingTransactions()
         }
-
-
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)

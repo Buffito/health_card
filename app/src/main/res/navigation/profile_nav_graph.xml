@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_nav_graph"
+    app:startDestination="@id/myProfileFragment">
+
+    <fragment
+        android:id="@+id/viewQrFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.ViewQrFragment"
+        android:label="ViewQrFragment"
+        tools:layout="@layout/fragment_view_qr">
+        <action
+            android:id="@+id/action_viewQrFragment_to_myProfileFragment"
+            app:destination="@id/myProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myProfileFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.MyProfileFragment"
+        android:label="MyProfileFragment"
+        tools:layout="@layout/fragment_my_profile">
+
+        <action
+            android:id="@+id/action_myProfileFragment_to_profileInfoFragment"
+            app:destination="@id/profileInfoFragment" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_viewQrFragment"
+            app:destination="@id/viewQrFragment" />
+        <action
+            android:id="@+id/action_myProfileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileInfoFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.ProfileInfoFragment"
+        android:label="ProfileInfoFragment"
+        tools:layout="@layout/fragment_profile_info">
+        <action
+            android:id="@+id/action_profileInfoFragment_to_myProfileFragment"
+            app:destination="@id/myProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.theodoroskotoufos.healthcard.fragments.SettingsFragment"
+        android:label="SettingsFragment">
+        <action
+            android:id="@+id/action_settingsFragment_to_myProfileFragment"
+            app:destination="@id/myProfileFragment" />
+    </fragment>
+
+</navigation>

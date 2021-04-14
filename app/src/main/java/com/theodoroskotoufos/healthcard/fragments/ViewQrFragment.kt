@@ -1,6 +1,5 @@
 package com.theodoroskotoufos.healthcard.fragments
 
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -10,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.google.iot.cbor.CborMap
 import com.google.zxing.BarcodeFormat
@@ -39,9 +36,16 @@ class ViewQrFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getFromCBOR(view)
+        if (fileExists()) {
+            getFromCBOR(view)
+        }
 
+    }
 
+    private fun fileExists(): Boolean {
+        val fileName = "user.json"
+        val file = File(context?.filesDir?.absolutePath, fileName)
+        return file.exists()
     }
 
     private fun getFromCBOR(view: View) {
@@ -51,20 +55,6 @@ class ViewQrFragment : Fragment() {
         val data = JSONObject(jsonString)
         val cborMap = CborMap.createFromJSONObject(data)
         generateQRCode(cborMap.toString(), view)
-    }
-
-    private fun initSharedPreferences(): SharedPreferences {
-        val mainKey = MasterKey.Builder(requireContext())
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        return EncryptedSharedPreferences.create(
-            requireActivity(),
-            "sharedPrefsFile",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
     }
 
     private fun getUser(jsonObject: JSONObject): User {
@@ -82,9 +72,8 @@ class ViewQrFragment : Fragment() {
     }
 
     private fun readFile(): String {
-        val sharedPreferences = initSharedPreferences()
-        val fileName = sharedPreferences.getString("personalID", "").toString() + ".json"
-        val file = File(context?.filesDir!!.absolutePath, fileName)
+        val fileName = "user.json"
+        val file = File(context?.filesDir?.absolutePath, fileName)
 
         val stream = FileInputStream(file)
 
