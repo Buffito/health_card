@@ -21,10 +21,7 @@ import com.theodoroskotoufos.healthcard.User
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
-import java.nio.channels.FileChannel
-import java.nio.charset.Charset
 
 class ProfileInfoFragment : Fragment() {
 
@@ -42,10 +39,8 @@ class ProfileInfoFragment : Fragment() {
         val sharedPreferences = initSharedPreferences()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if (fileExists()) {
-                getFromCBOR(view)
-                initPhoto(view, sharedPreferences)
-            }
+            getFromCBOR(view, sharedPreferences)
+            initPhoto(view, sharedPreferences)
 
         }, 300)
 
@@ -144,8 +139,9 @@ class ProfileInfoFragment : Fragment() {
 
     }
 
-    private fun getFromCBOR(view: View) {
-        val jsonObject = JSONObject(readFile())
+    private fun getFromCBOR(view: View, sharedPreferences: SharedPreferences) {
+        val tempString = sharedPreferences.getString("cbor", "")
+        val jsonObject = JSONObject(tempString)
         val user = getUser(jsonObject.getJSONObject("user"))
         val jsonString = Gson().toJson(user)
         val data = JSONObject(jsonString)
@@ -166,32 +162,6 @@ class ProfileInfoFragment : Fragment() {
             jsonObject.getString("vname"),
             jsonObject.getString("dov")
         )
-    }
-
-    private fun fileExists(): Boolean {
-        val fileName = "user.json"
-        val file = File(context?.filesDir?.absolutePath, fileName)
-        return file.exists()
-    }
-
-    private fun readFile(): String {
-        initSharedPreferences()
-        val fileName = "user.json"
-        val file = File(context?.filesDir?.absolutePath, fileName)
-
-        val stream = FileInputStream(file)
-
-        var jsonString: String
-        stream.use { stream ->
-            val fileChannel = stream.channel
-            val mappedByteBuffer = fileChannel.map(
-                FileChannel.MapMode.READ_ONLY,
-                0,
-                fileChannel.size()
-            )
-            jsonString = Charset.defaultCharset().decode(mappedByteBuffer).toString()
-        }
-        return jsonString
     }
 
 }

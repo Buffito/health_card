@@ -1,5 +1,6 @@
 package com.theodoroskotoufos.healthcard.fragments
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.google.iot.cbor.CborMap
 import com.google.zxing.BarcodeFormat
@@ -17,10 +20,6 @@ import com.google.zxing.WriterException
 import com.theodoroskotoufos.healthcard.R
 import com.theodoroskotoufos.healthcard.User
 import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
-import java.nio.channels.FileChannel
-import java.nio.charset.Charset
 
 
 class ViewQrFragment : Fragment() {
@@ -36,20 +35,27 @@ class ViewQrFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (fileExists()) {
-            getFromCBOR(view)
-        }
-
+        getFromCBOR(view)
     }
 
-    private fun fileExists(): Boolean {
-        val fileName = "user.json"
-        val file = File(context?.filesDir?.absolutePath, fileName)
-        return file.exists()
+    private fun initSharedPreferences(): SharedPreferences {
+        val mainKey = MasterKey.Builder(requireContext())
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        return EncryptedSharedPreferences.create(
+            requireActivity(),
+            "sharedPrefsFile",
+            mainKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 
     private fun getFromCBOR(view: View) {
-        val jsonObject = JSONObject(readFile())
+        val sharedPreferences = initSharedPreferences()
+        val tempString = sharedPreferences.getString("cbor", "")
+        val jsonObject = JSONObject(tempString)
         val user = getUser(jsonObject.getJSONObject("user"))
         val jsonString = Gson().toJson(user)
         val data = JSONObject(jsonString)
@@ -69,25 +75,6 @@ class ViewQrFragment : Fragment() {
             jsonObject.getString("vname"),
             jsonObject.getString("dov")
         )
-    }
-
-    private fun readFile(): String {
-        val fileName = "user.json"
-        val file = File(context?.filesDir?.absolutePath, fileName)
-
-        val stream = FileInputStream(file)
-
-        var jsonString: String
-        stream.use { stream ->
-            val fileChannel = stream.channel
-            val mappedByteBuffer = fileChannel.map(
-                FileChannel.MapMode.READ_ONLY,
-                0,
-                fileChannel.size()
-            )
-            jsonString = Charset.defaultCharset().decode(mappedByteBuffer).toString()
-        }
-        return jsonString
     }
 
     private fun generateQRCode(text: String, view: View) {

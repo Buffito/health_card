@@ -23,10 +23,6 @@ import com.theodoroskotoufos.healthcard.User
 import com.theodoroskotoufos.healthcard.facetec.facetecapp.FacetecAppActivity
 import kotlinx.android.synthetic.main.fragment_create_profile.*
 import org.json.JSONObject
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.Writer
 import java.util.*
 
 class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
@@ -59,14 +55,13 @@ class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         view.findViewById<Button>(R.id.nextButton).setOnClickListener {
             /// save to firebase/shared preferences and open user profile
-            saveToSharedPref(view, sharedPreferences)
-            toJson(view)
-
+            toJson(view, sharedPreferences)
 
             Handler(Looper.getMainLooper()).postDelayed({
                 val intent = Intent(requireContext(), FacetecAppActivity::class.java)
                 startActivity(intent)
             }, 300)
+
         }
 
     }
@@ -213,7 +208,11 @@ class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         )
     }
 
-    private fun saveToSharedPref(view: View, sharedPreferences: SharedPreferences) {
+    private fun saveToSharedPref(
+        view: View,
+        sharedPreferences: SharedPreferences,
+        jsonString: String
+    ) {
         val editor = sharedPreferences.edit()
         editor.putString(
             "first_name",
@@ -225,11 +224,12 @@ class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         )
         editor.putString("personalID", personalID)
         editor.putString("cardID", view.findViewById<EditText>(R.id.editTextCardID).text.toString())
+        editor.putString("cbor", jsonString)
         editor.apply()
 
     }
 
-    private fun toJson(view: View) {
+    private fun toJson(view: View, sharedPreferences: SharedPreferences) {
         val json = JSONObject()
 
         val user = User(
@@ -246,8 +246,8 @@ class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         json.put("user", addUser(user))
         saveToFirebase(view, json.toString())
-        saveJson(json.toString())
-
+        //saveJson(json.toString())
+        saveToSharedPref(view, sharedPreferences, json.toString())
     }
 
     private fun addUser(user: User): JSONObject {
@@ -263,17 +263,6 @@ class CreateProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             .put("dov", user.dov)
 
     }
-
-    private fun saveJson(jsonString: String) {
-        val output: Writer
-        val fileName = "user.json"
-        val file = File(context?.filesDir?.absolutePath, fileName)
-        file.createNewFile()
-        output = BufferedWriter(FileWriter(file))
-        output.write(jsonString)
-        output.close()
-    }
-
 
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
