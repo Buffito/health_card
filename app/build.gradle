@@ -25,10 +25,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    aaptOptions {
-        noCompress "tflite"  // Prevents compression of tflite files
-        noCompress "lite"
-    }
 
     buildTypes {
         release {
@@ -55,6 +51,9 @@ android {
                 srcDirs 'src/main/java', 'src/main/java/2'
             }
         }
+    }
+    androidResources {
+        noCompress 'lite'
     }
 
 
